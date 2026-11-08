@@ -1,0 +1,3130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>House of J&S · Verbs &amp; Tenses</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:opsz@14..32&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ─── RESET & BASE ─── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #eef3fc;
+            color: #0b1a30;
+            min-height: 100vh;
+        }
+        .app { max-width: 1440px; margin: 0 auto; padding: 20px; }
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #e8edf6; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #b0c4de; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8aa9d4; }
+
+        /* ─── LOGIN SCREEN ─── */
+        #loginOverlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(145deg, #0b1f3a 0%, #1a3a6b 50%, #2a5a8a 100%);
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.6s ease; backdrop-filter: blur(6px);
+            overflow-y: auto; padding: 20px;
+        }
+        #loginOverlay.hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+        .login-box {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-radius: 48px; padding: 40px 40px 36px; width: 100%; max-width: 420px;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+            text-align: center; border: 1px solid rgba(255, 255, 255, 0.06);
+            animation: slideUp 0.5s ease; margin: auto;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .login-box .logo-wrap { display: flex; justify-content: center; margin-bottom: 12px; }
+        .login-box .logo-wrap img { width: 72px; height: auto; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1); }
+        .login-box h2 { color: #fff; font-size: 22px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 2px; }
+        .login-box .sub { color: rgba(255,255,255,0.55); font-size: 13px; margin-bottom: 24px; font-weight: 400; }
+        .login-box .input-group { margin-bottom: 14px; text-align: left; position: relative; }
+        .login-box .input-group label { color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 500; display: block; margin-bottom: 4px; letter-spacing: 0.3px; }
+        .login-box .input-group input {
+            width: 100%; padding: 13px 18px; border-radius: 30px;
+            border: 2px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.06); color: #fff;
+            font-size: 15px; font-family: inherit; transition: 0.25s;
+            outline: none; padding-right: 46px;
+        }
+        .login-box .input-group input::placeholder { color: rgba(255,255,255,0.3); }
+        .login-box .input-group input:focus { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.10); box-shadow: 0 0 0 4px rgba(255,255,255,0.04); }
+        .login-box .input-group .toggle-pw { position: absolute; right: 16px; bottom: 13px; background: none; border: none; color: rgba(255,255,255,0.4); font-size: 18px; cursor: pointer; transition: 0.2s; padding: 4px; line-height: 1; }
+        .login-box .input-group .toggle-pw:hover { color: rgba(255,255,255,0.8); }
+        .login-box .login-btn {
+            width: 100%; padding: 14px; border-radius: 30px; border: none;
+            background: linear-gradient(135deg, #ffd966, #f5b342);
+            color: #0b1f3a; font-weight: 700; font-size: 17px;
+            cursor: pointer; transition: 0.25s; font-family: inherit;
+            margin-top: 6px; box-shadow: 0 8px 28px rgba(245,179,66,0.25);
+        }
+        .login-box .login-btn:hover { transform: scale(1.02); box-shadow: 0 12px 36px rgba(245,179,66,0.35); }
+        .login-box .login-btn:active { transform: scale(0.97); }
+        .login-box .login-error { color: #ffb3b3; font-size: 13px; margin-top: 10px; min-height: 20px; font-weight: 500; }
+        .login-box .login-footer { margin-top: 18px; color: rgba(255,255,255,0.2); font-size: 11px; }
+
+        /* ─── HEADER ─── */
+        .header {
+            background: linear-gradient(135deg, #0b1f3a 0%, #1a3a6b 100%);
+            border-radius: 28px; padding: 20px 28px 18px; color: #fff;
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+            gap: 12px 20px; box-shadow: 0 12px 40px rgba(11,31,58,0.35);
+            margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.04);
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-left .logo { background: rgba(255,255,255,0.08); border-radius: 14px; padding: 4px 8px; display: flex; align-items: center; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.04); }
+        .header-left .logo img { width: 40px; height: auto; border-radius: 10px; }
+        .header-left h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.2; }
+        .header-left h1 small { font-weight: 400; font-size: 11px; opacity: 0.7; display: block; margin-top: 1px; }
+        .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .header-right .user-badge { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); padding: 4px 16px 4px 10px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.06); font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.85); }
+        .header-right .user-badge .avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #ffd966, #f5b342); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #0b1f3a; }
+        .header-nav { display: flex; flex-wrap: wrap; gap: 5px; }
+        .header-nav button {
+            background: rgba(255,255,255,0.06); border: none; padding: 7px 18px; border-radius: 40px;
+            font-weight: 600; font-size: 12px; color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.25s;
+            display: inline-flex; align-items: center; gap: 5px; border: 1px solid transparent; font-family: inherit;
+        }
+        .header-nav button:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .header-nav button.active { background: #fff; color: #0b1f3a; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+        .header .logout-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); padding: 6px 16px; border-radius: 30px; color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .header .logout-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+        /* ─── STATS BAR ─── */
+        .stats-bar {
+            display: flex; flex-wrap: wrap; gap: 8px 20px; background: #fff; padding: 10px 22px;
+            border-radius: 60px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            align-items: center; font-size: 13px; border: 1px solid #e6ecf5;
+        }
+        .stats-bar .stat-item { display: flex; align-items: center; gap: 4px; color: #2a405c; }
+        .stats-bar .stat-item strong { color: #0b1f3a; font-weight: 700; }
+        .stats-bar .stat-divider { width: 1px; height: 22px; background: #dce3ef; }
+        .stats-bar .badge-level { background: #0b1f3a; color: #fff; padding: 2px 14px; border-radius: 30px; font-weight: 600; font-size: 11px; letter-spacing: 0.3px; }
+        .stats-bar .search-wrap { margin-left: auto; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .stats-bar .search-wrap input { padding: 6px 14px; border: 2px solid #dce3ef; border-radius: 40px; font-size: 13px; background: #f8faff; transition: 0.2s; min-width: 140px; font-family: inherit; }
+        .stats-bar .search-wrap input:focus { border-color: #1a3a6b; outline: none; box-shadow: 0 0 0 4px rgba(26,58,107,0.08); background: #fff; }
+        .stats-bar .search-wrap select { padding: 6px 12px; border: 2px solid #dce3ef; border-radius: 40px; font-size: 13px; background: #f8faff; cursor: pointer; font-family: inherit; }
+        .stats-bar .search-wrap select:focus { border-color: #1a3a6b; outline: none; }
+
+        /* ─── LETTER FILTER CHIPS ─── */
+        .letter-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+        .letter-chips button { padding: 4px 12px; border-radius: 30px; border: 2px solid #dce3ef; background: #fff; font-weight: 600; font-size: 12px; color: #2a405c; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .letter-chips button:hover { border-color: #8aa9d4; background: #f0f6ff; transform: translateY(-1px); }
+        .letter-chips button.active-chip { border-color: #1a3a6b; background: #1a3a6b; color: #fff; box-shadow: 0 4px 14px rgba(26,58,107,0.25); transform: translateY(-1px); }
+        .letter-chips button .count { font-weight: 400; font-size: 10px; opacity: 0.7; margin-left: 3px; }
+        .letter-chips button.active-chip .count { opacity: 0.85; }
+
+        /* ─── TABLE ─── */
+        .table-wrap { overflow-x: auto; border-radius: 18px; border: 1px solid #e6ecf5; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.03); }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 720px; }
+        th { background: #f2f6fd; text-align: left; padding: 10px 12px; font-weight: 700; color: #0b1f3a; border-bottom: 2px solid #dce3ef; position: sticky; top: 0; z-index: 2; font-size: 11px; letter-spacing: 0.4px; text-transform: uppercase; }
+        td { padding: 8px 12px; border-bottom: 1px solid #edf2fa; vertical-align: middle; }
+        tr:hover td { background: #f6faff; }
+        .v1 { font-weight: 700; color: #0b1f3a; }
+        .v2, .v3, .ving { color: #2a405c; }
+        .meaning { color: #4a5f7e; font-size: 12px; }
+        .row-num { color: #8aa0be; font-size: 11px; text-align: center; padding-right: 4px; }
+
+        /* ─── AUDIO BUTTONS ─── */
+        .audio-btn { background: none; border: none; cursor: pointer; font-size: 15px; padding: 2px 6px; border-radius: 30px; transition: 0.2s; opacity: 0.5; font-family: inherit; vertical-align: middle; }
+        .audio-btn:hover { opacity: 1; transform: scale(1.15); background: rgba(26,58,107,0.06); }
+        .audio-btn.playing { opacity: 1; color: #1a3a6b; animation: pulse 0.5s ease; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+        .cell-with-audio { display: flex; align-items: center; gap: 2px; }
+        .cell-with-audio .word { flex: 1; }
+
+        /* ─── PAGINATION ─── */
+        .pagination { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin: 16px 0 4px; }
+        .pagination button { background: #fff; border: 1px solid #dce3ef; padding: 4px 12px; border-radius: 30px; font-weight: 500; cursor: pointer; transition: 0.15s; font-size: 13px; color: #1e2f4a; font-family: inherit; }
+        .pagination button:hover { background: #eef4fd; transform: translateY(-1px); }
+        .pagination button.active-page { background: #1a3a6b; color: #fff; border-color: #1a3a6b; box-shadow: 0 4px 12px rgba(26,58,107,0.2); }
+
+        /* ─── PRACTICE / QUIZ AREA ─── */
+        .practice-area { background: #fff; border-radius: 28px; padding: 24px 28px; border: 1px solid #e6ecf5; box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: none; margin-top: 4px; }
+        .practice-area.active { display: block; }
+
+        .practice-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #edf2fa; }
+        .practice-header .title-group { display: flex; align-items: center; gap: 10px; }
+        .practice-header .title-group h2 { font-size: 18px; font-weight: 700; color: #0b1f3a; }
+        .practice-header .title-group .letter-badge { background: #1a3a6b; color: #fff; padding: 2px 14px; border-radius: 40px; font-weight: 700; font-size: 16px; }
+        .practice-header .progress-text { font-weight: 600; font-size: 13px; color: #2a405c; background: #f2f6fd; padding: 4px 16px; border-radius: 40px; }
+        .practice-header .progress-bar-track { width: 100%; height: 5px; background: #e6ecf5; border-radius: 10px; margin-top: 6px; overflow: hidden; }
+        .practice-header .progress-bar-track .fill { height: 100%; background: linear-gradient(90deg, #1a3a6b, #4a7db5); border-radius: 10px; transition: width 0.4s ease; width: 0%; }
+
+        /* ─── QUESTION CARD ─── */
+        .question-card { background: #f8fbff; border-radius: 20px; padding: 24px 28px; border: 1px solid #e6ecf5; margin-bottom: 16px; }
+        .question-card .q-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: #6a7f9e; margin-bottom: 4px; }
+        .question-card .q-text { font-size: 18px; font-weight: 600; color: #0b1f3a; margin-bottom: 4px; }
+        .question-card .q-hint { font-size: 13px; color: #4a5f7e; margin-bottom: 12px; }
+        .question-card .q-input-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .question-card .q-input-row input { flex: 1; min-width: 160px; padding: 10px 18px; border: 2px solid #dce3ef; border-radius: 40px; font-size: 14px; background: #fff; transition: 0.2s; font-family: inherit; }
+        .question-card .q-input-row input:focus { border-color: #1a3a6b; outline: none; box-shadow: 0 0 0 4px rgba(26,58,107,0.08); }
+        .question-card .q-input-row button { padding: 10px 26px; border-radius: 40px; border: none; background: #1a3a6b; color: #fff; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; font-family: inherit; white-space: nowrap; }
+        .question-card .q-input-row button:hover { background: #264f87; transform: scale(1.02); }
+        .question-card .q-input-row button:disabled { opacity: 0.5; pointer-events: none; transform: none; }
+        .question-card .feedback-box { margin-top: 12px; padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 13px; display: inline-block; background: #f2f6fd; color: #0b1f3a; }
+        .question-card .feedback-box.correct { background: #d4edda; color: #155724; }
+        .question-card .feedback-box.wrong { background: #f8dddd; color: #721c24; }
+        .question-card .extra-info { margin-top: 10px; padding: 10px 16px; background: #edf2fa; border-radius: 14px; font-size: 12px; color: #1e2f4a; display: flex; flex-wrap: wrap; gap: 4px 14px; border-left: 4px solid #1a3a6b; }
+        .question-card .extra-info strong { color: #0b1f3a; }
+        .question-card .extra-info .audio-inline { background: none; border: none; cursor: pointer; font-size: 15px; padding: 0 4px; opacity: 0.5; transition: 0.2s; font-family: inherit; }
+        .question-card .extra-info .audio-inline:hover { opacity: 1; }
+
+        /* ─── PRACTICE ACTIONS ─── */
+        .practice-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+        .practice-actions button { padding: 8px 20px; border-radius: 40px; border: none; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .practice-actions .btn-primary { background: #1a3a6b; color: #fff; }
+        .practice-actions .btn-primary:hover { background: #264f87; transform: translateY(-1px); }
+        .practice-actions .btn-primary:disabled { opacity: 0.4; pointer-events: none; transform: none; }
+        .practice-actions .btn-secondary { background: #eef2f9; color: #1e2f4a; }
+        .practice-actions .btn-secondary:hover { background: #dce3ef; transform: translateY(-1px); }
+        .practice-actions .btn-success { background: #28a745; color: #fff; }
+        .practice-actions .btn-success:hover { background: #218838; transform: translateY(-1px); }
+
+        /* ─── RESULT SUMMARY ─── */
+        .result-summary { background: #f8fbff; border-radius: 20px; padding: 16px 22px; margin-top: 14px; border: 2px solid #dce3ef; display: none; font-weight: 500; text-align: center; }
+        .result-summary.show { display: block; }
+        .result-summary .big-score { font-size: 34px; font-weight: 700; color: #1a3a6b; }
+        .result-summary .sub-text { color: #4a5f7e; margin-top: 2px; }
+
+        /* ─── LETTER GROUP NAV ─── */
+        .letter-nav { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; justify-content: center; }
+        .letter-nav button { padding: 4px 10px; border-radius: 30px; border: 2px solid #dce3ef; background: #fff; font-weight: 600; font-size: 11px; color: #2a405c; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .letter-nav button:hover { border-color: #8aa9d4; background: #f0f6ff; transform: translateY(-1px); }
+        .letter-nav button.active-letter { border-color: #1a3a6b; background: #1a3a6b; color: #fff; box-shadow: 0 4px 14px rgba(26,58,107,0.25); transform: translateY(-1px); }
+
+        /* ─── FOOTER ─── */
+        .footer { margin-top: 36px; background: linear-gradient(135deg, #0b1f3a 0%, #1a3a6b 100%); border-radius: 24px; padding: 24px 28px 20px; border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; color: rgba(255,255,255,0.7); font-size: 13px; box-shadow: 0 8px 32px rgba(11,31,58,0.25); }
+        .footer .brand { font-weight: 700; color: #fff; font-size: 17px; letter-spacing: -0.3px; }
+        .footer .brand-icon { font-size: 18px; margin-right: 4px; }
+        .footer .address { color: rgba(255,255,255,0.55); font-size: 12px; max-width: 480px; line-height: 1.5; }
+        .footer .contact { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 20px; font-size: 12px; margin-top: 2px; }
+        .footer .contact a { color: #ffd966; text-decoration: none; font-weight: 500; transition: 0.2s; }
+        .footer .contact a:hover { color: #ffe08a; text-decoration: underline; }
+        .footer .contact span { display: inline-flex; align-items: center; gap: 4px; }
+        .footer .copy { color: rgba(255,255,255,0.2); font-size: 11px; margin-top: 2px; }
+        .footer .divider-line { width: 50px; height: 2px; background: rgba(255,255,255,0.08); border-radius: 10px; margin: 2px 0 4px; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 800px) {
+            .app { padding: 12px; }
+            .header { padding: 14px 16px; flex-direction: column; align-items: stretch; gap: 10px; }
+            .header-left h1 { font-size: 15px; }
+            .header-nav { justify-content: center; }
+            .header-nav button { padding: 5px 12px; font-size: 11px; }
+            .header-right { justify-content: center; }
+            .stats-bar { padding: 8px 14px; border-radius: 28px; flex-direction: column; align-items: stretch; gap: 4px; }
+            .stats-bar .search-wrap { margin-left: 0; flex-direction: column; align-items: stretch; }
+            .stats-bar .search-wrap input { min-width: unset; }
+            .practice-area { padding: 14px; }
+            .question-card { padding: 14px; }
+            .question-card .q-text { font-size: 16px; }
+            .question-card .q-input-row { flex-direction: column; }
+            .question-card .q-input-row input { width: 100%; min-width: unset; }
+            .question-card .q-input-row button { width: 100%; justify-content: center; }
+            .footer { padding: 18px 16px; }
+            .footer .brand { font-size: 15px; }
+            .letter-nav { gap: 3px; }
+            .letter-nav button { padding: 3px 8px; font-size: 10px; }
+            .header-left .logo img { width: 32px; }
+            .login-box { padding: 28px 20px 24px; margin: 12px; }
+            .login-box .logo-wrap img { width: 56px; }
+        }
+        @media (max-width: 480px) {
+            .header-nav button { font-size: 10px; padding: 4px 8px; }
+            .stats-bar .stat-item { font-size: 11px; }
+            .practice-header .title-group h2 { font-size: 15px; }
+            .practice-header .title-group .letter-badge { font-size: 13px; padding: 0 10px; }
+            .question-card .q-text { font-size: 15px; }
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .question-card { animation: fadeSlideUp 0.3s ease; }
+
+        /* ─── EMPTY STATE ─── */
+        .empty-state { text-align: center; padding: 32px 20px; color: #6a7f9e; }
+        .empty-state .icon { font-size: 40px; margin-bottom: 8px; }
+        .empty-state h3 { color: #0b1f3a; margin-bottom: 4px; }
+
+        /* ─── TOAST ─── */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0b1f3a; color: #fff; padding: 10px 26px;
+            border-radius: 60px; font-weight: 500; font-size: 13px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3); opacity: 0;
+            transition: 0.4s ease; z-index: 999; pointer-events: none;
+            border: 1px solid rgba(255,255,255,0.06); max-width: 90vw; text-align: center;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ─── BODY LOCK ─── */
+        .body-locked { overflow: hidden; }
+
+        /* ═══════════════════════════════════════════════════════════════
+           TENSES SECTION — Refined Edition
+           ═══════════════════════════════════════════════════════════════ */
+        #tensesSection {
+            --gold: #D4AF37;
+            --gold-light: #F3E5AB;
+            --gold-dark: #B8860B;
+            --gold-deep: #8B6914;
+            --silver: #C0C0C0;
+            --silver-light: #F4F6F8;
+            --silver-mid: #E0E4E8;
+            --silver-dark: #7F8C8D;
+            --correct: #27AE60;
+            --wrong: #E74C3C;
+            --ink: #2C3E50;
+
+            display: none;
+            margin-top: 20px;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        #tensesSection.active { display: block; }
+
+        #tensesSection .tenses-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        /* ── Sidebar ── */
+        #tensesSection .tenses-sidebar {
+            background: linear-gradient(180deg, #FFFFFF 0%, #FBFCFE 100%);
+            border-radius: 22px;
+            padding: 20px 0 14px;
+            box-shadow:
+                0 2px 4px rgba(11, 31, 58, 0.03),
+                0 12px 32px rgba(11, 31, 58, 0.06);
+            border: 1px solid #EAEDF2;
+            max-height: calc(100vh - 220px);
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+        }
+        #tensesSection .tenses-sidebar h2 {
+            font-family: 'Fraunces', Georgia, serif;
+            text-align: center;
+            background: linear-gradient(135deg, var(--gold-deep), var(--gold), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 0 0 14px;
+            letter-spacing: 0.3px;
+            padding: 0 16px;
+        }
+
+        #tensesSection .nav-item {
+            padding: 12px 22px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            font-size: 0.9rem;
+            color: var(--ink);
+            position: relative;
+        }
+        #tensesSection .nav-item:hover {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.08), transparent);
+            border-left-color: rgba(212, 175, 55, 0.45);
+            padding-left: 26px;
+        }
+        #tensesSection .nav-item.active {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: #fff;
+            border-left: 4px solid #5A4015;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 6px 18px rgba(184, 134, 11, 0.35);
+            font-weight: 600;
+        }
+        #tensesSection .nav-item small {
+            display: block;
+            font-size: 0.74rem;
+            color: #7F8C8D;
+            margin-top: 3px;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+        #tensesSection .nav-item.active small { color: rgba(255, 255, 255, 0.88); }
+
+        #tensesSection .nav-mixed {
+            background: linear-gradient(135deg, #FBF5E0, #F3E5AB);
+            border-left: 4px solid var(--gold-dark);
+            font-weight: 700;
+            color: var(--gold-deep);
+            margin-top: 14px;
+            border-top: 1px dashed var(--silver);
+            padding-top: 14px;
+            letter-spacing: 0.2px;
+        }
+        #tensesSection .nav-mixed:hover {
+            background: linear-gradient(135deg, #F7EDC9, #EBD77C);
+        }
+        #tensesSection .nav-mixed.active {
+            background: linear-gradient(135deg, var(--silver-dark), #1A1A1A);
+            color: #fff;
+            border-left-color: var(--gold);
+            box-shadow: 0 6px 18px rgba(127, 140, 141, 0.4);
+        }
+
+        /* ── Main card ── */
+        #tensesSection .tenses-main { min-width: 0; }
+        #tensesSection .tenses-card {
+            background: #fff;
+            border-radius: 22px;
+            padding: 32px 36px;
+            box-shadow:
+                0 2px 4px rgba(11, 31, 58, 0.03),
+                0 16px 40px rgba(11, 31, 58, 0.07);
+            border: 1px solid #EAEDF2;
+            border-top: 4px solid var(--gold);
+            min-height: 500px;
+            animation: tensesFadeIn 0.4s ease;
+        }
+        @keyframes tensesFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Headings ── */
+        #tensesSection .lesson-header h1 {
+            font-family: 'Fraunces', Georgia, serif;
+            margin: 0;
+            background: linear-gradient(135deg, var(--gold-deep) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.95rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        #tensesSection .lesson-header h3 {
+            color: var(--silver-dark);
+            font-weight: 400;
+            margin: 6px 0 18px;
+            font-size: 1.02rem;
+            letter-spacing: 0.2px;
+            line-height: 1.5;
+        }
+
+        /* ── Formula ── */
+        #tensesSection .formula {
+            background: linear-gradient(135deg, #FBF7EA 0%, #F3E5AB 100%);
+            padding: 16px 22px;
+            border-left: 4px solid var(--gold-dark);
+            font-weight: 600;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1.02rem;
+            margin: 16px 0;
+            border-radius: 10px;
+            color: var(--gold-deep);
+            letter-spacing: 0.3px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+        }
+
+        /* ── Timeline ── */
+        #tensesSection .timeline {
+            display: flex;
+            justify-content: space-between;
+            background: linear-gradient(90deg, #F4F6F8, #E8ECEF);
+            padding: 12px 22px;
+            border-radius: 10px;
+            margin: 16px 0;
+            font-size: 0.88rem;
+            position: relative;
+            border: 1px solid var(--silver-mid);
+            font-weight: 600;
+            color: var(--silver-dark);
+            letter-spacing: 0.3px;
+        }
+        #tensesSection .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 22px;
+            right: 22px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--silver), var(--gold), var(--silver));
+            z-index: 1;
+            border-radius: 2px;
+        }
+        #tensesSection .timeline span {
+            background: inherit;
+            padding: 0 12px;
+            z-index: 2;
+            position: relative;
+        }
+        #tensesSection .timeline .point {
+            color: var(--gold-dark);
+            font-weight: 800;
+            background: #fff;
+            padding: 2px 14px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(184, 134, 11, 0.25);
+            border: 1px solid rgba(184, 134, 11, 0.2);
+        }
+
+        /* ── Body text ── */
+        #tensesSection p {
+            line-height: 1.7;
+            font-size: 0.96rem;
+            color: #3B4A5C;
+        }
+        #tensesSection p strong { color: var(--gold-deep); font-weight: 600; }
+
+        /* ── Exercise section ── */
+        #tensesSection .exercise-section {
+            border-top: 1px dashed var(--silver);
+            margin-top: 28px;
+            padding-top: 22px;
+        }
+        #tensesSection .exercise-section h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            color: var(--ink);
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        /* ── Question box ── */
+        #tensesSection .question-box {
+            font-size: 1.18rem;
+            margin-bottom: 22px;
+            font-weight: 600;
+            color: var(--ink);
+            background: linear-gradient(135deg, #FBFCFE 0%, #F4F6F8 100%);
+            padding: 22px 26px;
+            border-radius: 14px;
+            border-left: 4px solid var(--gold);
+            line-height: 1.7;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        /* ── Inputs ── */
+        #tensesSection .input-group { margin-bottom: 20px; }
+        #tensesSection .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--silver-dark);
+            font-size: 0.78rem;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+        }
+        #tensesSection .form-control {
+            width: 100%;
+            padding: 13px 18px;
+            border: 2px solid var(--silver-mid);
+            border-radius: 10px;
+            font-size: 0.98rem;
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            background: #fff;
+            color: var(--ink);
+        }
+        #tensesSection .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+            background: #FFFEF9;
+        }
+        #tensesSection select.form-control { cursor: pointer; }
+
+        /* ── Options ── */
+        #tensesSection .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #tensesSection .option {
+            padding: 16px 22px;
+            border: 2px solid var(--silver-mid);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            background: #FAFBFC;
+            font-size: 1.02rem;
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: 0.1px;
+        }
+        #tensesSection .option:hover {
+            background: linear-gradient(135deg, #FFFBEB, #FBF5E0);
+            border-color: var(--gold);
+            transform: translateX(4px);
+            box-shadow: 0 4px 14px rgba(212, 175, 55, 0.15);
+        }
+        #tensesSection .option.correct {
+            background: linear-gradient(135deg, #D4EDDA, #C3E6CB);
+            border-color: var(--correct);
+            color: #155724;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(39, 174, 96, 0.2);
+        }
+        #tensesSection .option.wrong {
+            background: linear-gradient(135deg, #F8D7DA, #F1C0C4);
+            border-color: var(--wrong);
+            color: #721C24;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(231, 76, 60, 0.2);
+        }
+
+        /* ── Feedback ── */
+        #tensesSection .feedback {
+            margin-top: 20px;
+            padding: 18px 22px;
+            border-radius: 12px;
+            display: none;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            animation: feedbackSlide 0.3s ease;
+        }
+        @keyframes feedbackSlide {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #tensesSection .feedback.correct-fb {
+            background: linear-gradient(135deg, #EAF7EE, #D4EDDA);
+            border-left: 4px solid var(--correct);
+            display: block;
+            color: #155724;
+        }
+        #tensesSection .feedback.wrong-fb {
+            background: linear-gradient(135deg, #FCEEEE, #F8D7DA);
+            border-left: 4px solid var(--wrong);
+            display: block;
+            color: #721C24;
+        }
+        #tensesSection .feedback strong {
+            display: inline-block;
+            margin-bottom: 4px;
+            font-size: 1.02rem;
+        }
+
+        /* ── Buttons ── */
+        #tensesSection .btn {
+            padding: 13px 30px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.98rem;
+            font-weight: 700;
+            margin-top: 16px;
+            box-shadow:
+                0 4px 12px rgba(184, 134, 11, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            letter-spacing: 0.3px;
+        }
+        #tensesSection .btn:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 20px rgba(184, 134, 11, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        #tensesSection .btn:active { transform: translateY(0); }
+
+        /* ── Progress ── */
+        #tensesSection .progress {
+            font-size: 0.9rem;
+            color: var(--silver-dark);
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #F4F6F8, #E8ECEF);
+            border-radius: 10px;
+            letter-spacing: 0.3px;
+            border: 1px solid var(--silver-mid);
+        }
+        #tensesSection .progress span:last-child {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #fff;
+            padding: 3px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            box-shadow: 0 2px 8px rgba(184, 134, 11, 0.3);
+        }
+
+        /* ── Score screen ── */
+        #tensesSection .score-screen {
+            text-align: center;
+            padding: 50px 24px;
+            animation: tensesFadeIn 0.4s ease;
+        }
+        #tensesSection .score-screen .score-emoji {
+            font-size: 4rem;
+            margin-bottom: 12px;
+            display: inline-block;
+            animation: bounceEmoji 0.7s ease;
+        }
+        @keyframes bounceEmoji {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        #tensesSection .score-screen h2 {
+            font-family: 'Fraunces', Georgia, serif;
+            background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 16px;
+            letter-spacing: -0.5px;
+        }
+        #tensesSection .score-screen .final-score {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+            letter-spacing: -1px;
+        }
+        #tensesSection .score-screen .final-grade {
+            font-size: 1.08rem;
+            color: var(--ink);
+            margin-bottom: 30px;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            #tensesSection .tenses-layout { grid-template-columns: 1fr; }
+            #tensesSection .tenses-sidebar {
+                max-height: 220px;
+                position: static;
+            }
+            #tensesSection .tenses-card { padding: 20px 18px; }
+            #tensesSection .lesson-header h1 { font-size: 1.45rem; }
+            #tensesSection .question-box { font-size: 1rem; padding: 16px 18px; }
+            #tensesSection .btn { width: 100%; }
+            #tensesSection .formula { font-size: 0.92rem; padding: 12px 16px; }
+            #tensesSection .score-screen h2 { font-size: 1.5rem; }
+            #tensesSection .score-screen .final-score { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ TOAST ═══ -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ═══ LOGIN OVERLAY ═══ -->
+    <div id="loginOverlay">
+        <div class="login-box" id="loginBox">
+            <div class="logo-wrap">
+                <img src="logo1.png" alt="House of J&S" />
+            </div>
+            <h2>House of J&S</h2>
+            <p class="sub">1000 English Verbs &amp; 12 Tenses · Training Center</p>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="input-group">
+                    <label>👤 Student Name</label>
+                    <input type="text" id="studentName" placeholder="Enter your name" required />
+                </div>
+                <div class="input-group">
+                    <label>🔑 Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" required />
+                    <button type="button" class="toggle-pw" id="toggleLoginPw" aria-label="Toggle password visibility">👁️</button>
+                </div>
+                <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+                <div class="login-error" id="loginError"></div>
+            </form>
+            <div class="login-footer">© 2026 · House of J&S Computer Training Center</div>
+        </div>
+    </div>
+
+    <!-- ═══ MAIN APP ═══ -->
+    <div class="app" id="mainApp" style="display:none;">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo"><img src="logo1.png" alt="J&S" /></div>
+                <div>
+                    <h1>House of J&S Computer Training Center <small>1000 English Verbs &amp; 12 Tenses</small></h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="user-badge" id="userBadge">
+                    <span class="avatar" id="userAvatar">👤</span>
+                    <span id="userDisplayName">User</span>
+                </div>
+                <nav class="header-nav">
+                    <button id="btnLearn" class="active">📖 Learn</button>
+                    <button id="btnPractice">✍️ Practice</button>
+                    <button id="btnExam">📝 Exam</button>
+                    <button id="btnTenses">⏰ Tenses</button>
+                </nav>
+                <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
+            </div>
+        </header>
+
+        <!-- STATS BAR -->
+        <div class="stats-bar">
+            <span class="stat-item">📚 Total <strong id="totalCount">1000</strong></span>
+            <span class="stat-divider"></span>
+            <span class="stat-item">✅ Mastered <strong id="masteredCount">0</strong></span>
+            <span class="stat-divider"></span>
+            <span class="stat-item">📊 Level <span class="badge-level" id="levelBadge">Beginner</span></span>
+            <span class="stat-divider"></span>
+            <span class="stat-item">🔥 Streak <strong id="streakCount">0</strong></span>
+            <div class="search-wrap">
+                <input type="text" id="searchInput" placeholder="Search verb / meaning..." />
+                <select id="filterSelect">
+                    <option value="all">All</option>
+                    <option value="regular">Regular</option>
+                    <option value="irregular">Irregular</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- LEARN SECTION -->
+        <div id="learnSection">
+            <div class="letter-chips" id="letterChips"></div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:40px;">#</th>
+                            <th style="min-width:100px;">V1 (Base) 🔊</th>
+                            <th style="min-width:100px;">V2 (Past) 🔊</th>
+                            <th style="min-width:100px;">V3 (P.P) 🔊</th>
+                            <th style="min-width:100px;">V-ing 🔊</th>
+                            <th style="min-width:130px;">Myanmar Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody id="verbTableBody"></tbody>
+                </table>
+            </div>
+            <div class="pagination" id="paginationControls"></div>
+        </div>
+
+        <!-- PRACTICE / EXAM AREA -->
+        <div id="practiceArea" class="practice-area">
+            <div class="practice-header">
+                <div class="title-group">
+                    <h2 id="practiceTitle">✍️ Practice</h2>
+                    <span class="letter-badge" id="letterBadge">A</span>
+                </div>
+                <div style="flex:1; min-width:80px;">
+                    <span class="progress-text" id="practiceProgress">0 / 0</span>
+                    <div class="progress-bar-track">
+                        <div class="fill" id="progressFill" style="width:0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="letter-nav" id="letterNav"></div>
+
+            <div id="questionContainer"></div>
+
+            <div class="practice-actions" id="practiceActions">
+                <button class="btn-primary" id="practiceSubmitBtn">Check Answer</button>
+                <button class="btn-secondary" id="practiceNextBtn" disabled>Next →</button>
+                <button class="btn-secondary" id="practiceResetBtn">↻ Reset</button>
+                <button class="btn-success" id="practiceSkipBtn">Skip</button>
+            </div>
+
+            <div class="result-summary" id="resultSummary"></div>
+        </div>
+
+        <!-- ═══ TENSES SECTION ═══ -->
+        <div id="tensesSection">
+            <div class="tenses-layout">
+                <div class="tenses-sidebar">
+                    <h2>🌟 12 English Tenses</h2>
+                    <div id="tensesNavList"></div>
+                </div>
+                <div class="tenses-main">
+                    <div class="tenses-card" id="tensesLessonView"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="brand"><span class="brand-icon">🏛️</span> House of J&S Computer Training Center</div>
+            <div class="divider-line"></div>
+            <div class="address">Near Maha Myaing Fire Station, Win Neinmitaron Monastery Road, Behind KK Car Service.</div>
+            <div class="contact">
+                <span>📞 <a href="tel:+9509791857053">+95 9791857053</a></span>
+                <span>✉️ <a href="mailto:houseofjnscomputercenter@gmail.com">houseofjnscomputercenter@gmail.com</a></span>
+            </div>
+            <div class="copy">© 2026 · All Rights Reserved</div>
+        </footer>
+
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        //  SIMPLE LOCAL LOGIN
+        //  Student Name + password "HJS2026"
+        // ═══════════════════════════════════════════════════════════════
+
+        const LOGIN_PASSWORD = 'HJS2026';
+        const SESSION_KEY = 'hjs_student_name';
+
+        // ═══════════════════════════════════════════════════════════════
+        //  VERBS DATA (1000+)
+        // ═══════════════════════════════════════════════════════════════
+
+        const VERBS_DATA = [
+            ["abash","abashed","abashed","abashes","abashing","ရှက်စေသည်"],
+            ["abate","abated","abated","abates","abating","လျော့ပါးစေသည်"],
+            ["abide","abode","abode","abides","abiding","သည်းခံသည်"],
+            ["absorb","absorbed","absorbed","absorbs","absorbing","စုပ်ယူသည်"],
+            ["accept","accepted","accepted","accepts","accepting","လက်ခံသည်"],
+            ["accompany","accompanied","accompanied","accompanies","accompanying","လိုက်ပါသည်"],
+            ["ache","ached","ached","aches","aching","နာသည်"],
+            ["achieve","achieved","achieved","achieves","achieving","အောင်မြင်သည်"],
+            ["acquire","acquired","acquired","acquires","acquiring","ရယူသည်"],
+            ["act","acted","acted","acts","acting","ပြုမူသည်"],
+            ["add","added","added","adds","adding","ထည့်သည်"],
+            ["address","addressed","addressed","addresses","addressing","မိန့်ခွန်းပြောသည်"],
+            ["adjust","adjusted","adjusted","adjusts","adjusting","ညှိသည်"],
+            ["admire","admired","admired","admires","admiring","ချီးကျူးသည်"],
+            ["admit","admitted","admitted","admits","admitting","ဝန်ခံသည်"],
+            ["advise","advised","advised","advises","advising","အကြံပေးသည်"],
+            ["afford","afforded","afforded","affords","affording","တတ်နိုင်သည်"],
+            ["agree","agreed","agreed","agrees","agreeing","သဘောတူသည်"],
+            ["alight","alit","alit","alights","alighting","ဆင်းသည်"],
+            ["allow","allowed","allowed","allows","allowing","ခွင့်ပြုသည်"],
+            ["animate","animated","animated","animates","animating","အသက်သွင်းသည်"],
+            ["announce","announced","announced","announces","announcing","ကြေညာသည်"],
+            ["answer","answered","answered","answers","answering","ဖြေသည်"],
+            ["apologize","apologized","apologized","apologizes","apologizing","တောင်းပန်သည်"],
+            ["appear","appeared","appeared","appears","appearing","ပေါ်လာသည်"],
+            ["applaud","applauded","applauded","applauds","applauding","လက်ခုပ်တီးသည်"],
+            ["apply","applied","applied","applies","applying","လျှောက်ထားသည်"],
+            ["approach","approached","approached","approaches","approaching","ချဉ်းကပ်သည်"],
+            ["approve","approved","approved","approves","approving","ထောက်ခံသည်"],
+            ["argue","argued","argued","argues","arguing","ငြင်းခုံသည်"],
+            ["arise","arose","arisen","arises","arising","ပေါ်ပေါက်သည်"],
+            ["arrange","arranged","arranged","arranges","arranging","စီစဉ်သည်"],
+            ["arrest","arrested","arrested","arrests","arresting","ဖမ်းဆီးသည်"],
+            ["ask","asked","asked","asks","asking","မေးသည်"],
+            ["assert","asserted","asserted","asserts","asserting","အခိုင်အမာပြောသည်"],
+            ["assort","assorted","assorted","assorts","assorting","ခွဲခြားသည်"],
+            ["astonish","astonished","astonished","astonishes","astonishing","အံ့ဩစေသည်"],
+            ["attack","attacked","attacked","attacks","attacking","တိုက်ခိုက်သည်"],
+            ["attend","attended","attended","attends","attending","တက်ရောက်သည်"],
+            ["attract","attracted","attracted","attracts","attracting","ဆွဲဆောင်သည်"],
+            ["audit","audited","audited","audits","auditing","စစ်ဆေးသည်"],
+            ["avoid","avoided","avoided","avoids","avoiding","ရှောင်သည်"],
+            ["awake","awoke","awoken","awakes","awaking","နိုးသည်"],
+            ["bang","banged","banged","bangs","banging","ရိုက်ခတ်သည်"],
+            ["banish","banished","banished","banishes","banishing","နှင်ထုတ်သည်"],
+            ["bash","bashed","bashed","bashes","bashing","ရိုက်နှက်သည်"],
+            ["bat","batted","batted","bats","batting","ရိုက်သည်"],
+            ["be","was/were","been","is","being","ဖြစ်သည်"],
+            ["bear","bore","born","bears","bearing","ခံရသည်"],
+            ["bear","bore","borne","bears","bearing","ခံနိုင်ရည်ရှိသည်"],
+            ["beat","beat","beaten","beats","beating","ရိုက်သည်"],
+            ["beautify","beautified","beautified","beautifies","beautifying","လှပစေသည်"],
+            ["become","became","become","becomes","becoming","ဖြစ်လာသည်"],
+            ["befall","befell","befallen","befalls","befalling","ကြုံသည်"],
+            ["beg","begged","begged","begs","begging","တောင်းပန်သည်"],
+            ["begin","began","begun","begins","beginning","စတင်သည်"],
+            ["behave","behaved","behaved","behaves","behaving","ပြုမူသည်"],
+            ["behold","beheld","beheld","beholds","beholding","မြင်သည်"],
+            ["believe","believed","believed","believes","believing","ယုံကြည်သည်"],
+            ["belong","belonged","belonged","belongs","belonging","ပိုင်ဆိုင်သည်"],
+            ["bend","bent","bent","bends","bending","ကွေးသည်"],
+            ["bereave","bereft","bereft","bereaves","bereaving","ဆုံးရှုံးစေသည်"],
+            ["beseech","besought","besought","beseeches","beseeching","တောင်းပန်သည်"],
+            ["bet","bet","bet","bets","betting","လောင်းကစားသည်"],
+            ["betray","betrayed","betrayed","betrays","betraying","သစ္စာဖောက်သည်"],
+            ["bid","bade","bidden","bids","bidding","ပေးသည်"],
+            ["bid","bid","bid","bids","bidding","လေလံဆွဲသည်"],
+            ["bind","bound","bound","binds","binding","စည်းသည်"],
+            ["bite","bit","bitten","bites","biting","ကိုက်သည်"],
+            ["bleed","bled","bled","bleeds","bleeding","သွေးယိုသည်"],
+            ["bless","blessed","blessed","blesses","blessing","ကောင်းချီးပေးသည်"],
+            ["blossom","blossomed","blossomed","blossoms","blossoming","ပွင့်သည်"],
+            ["blow","blew","blown","blows","blowing","မှုတ်သည်"],
+            ["blur","blurred","blurred","blurs","blurring","ဝါးသည်"],
+            ["blush","blushed","blushed","blushes","blushing","မျက်နှာနီသည်"],
+            ["board","boarded","boarded","boards","boarding","စီးသည်"],
+            ["boast","boasted","boasted","boasts","boasting","ကြွားဝါသည်"],
+            ["boil","boiled","boiled","boils","boiling","ပြုတ်သည်"],
+            ["bow","bowed","bowed","bows","bowing","ဦးညွှတ်သည်"],
+            ["box","boxed","boxed","boxes","boxing","လက်ဝှေ့ထိုးသည်"],
+            ["bray","brayed","brayed","brays","braying","မြည်သည်"],
+            ["break","broke","broken","breaks","breaking","ချိုးသည်"],
+            ["breathe","breathed","breathed","breathes","breathing","ရှူသည်"],
+            ["breed","bred","bred","breeds","breeding","မွေးမြူသည်"],
+            ["bring","brought","brought","brings","bringing","ဆောင်သည်"],
+            ["broadcast","broadcast","broadcast","broadcasts","broadcasting","ထုတ်လွှင့်သည်"],
+            ["brush","brushed","brushed","brushes","brushing","ပွတ်တိုက်သည်"],
+            ["build","built","built","builds","building","ဆောက်လုပ်သည်"],
+            ["burn","burnt","burnt","burns","burning","လောင်သည်"],
+            ["burst","burst","burst","bursts","bursting","ပေါက်ကွဲသည်"],
+            ["bury","buried","buried","buries","burying","မြှုပ်နှံသည်"],
+            ["bust","bust","bust","busts","busting","ဖျက်ဆီးသည်"],
+            ["buy","bought","bought","buys","buying","ဝယ်သည်"],
+            ["buzz","buzzed","buzzed","buzzes","buzzing","ညည်းညူသည်"],
+            ["calculate","calculated","calculated","calculates","calculating","တွက်ချက်သည်"],
+            ["call","called","called","calls","calling","ခေါ်သည်"],
+            ["canvass","canvassed","canvassed","canvasses","canvassing","ဆွဲဆောင်သည်"],
+            ["capture","captured","captured","captures","capturing","ဖမ်းဆီးသည်"],
+            ["caress","caressed","caressed","caresses","caressing","ပွေ့ဖက်သည်"],
+            ["carry","carried","carried","carries","carrying","သယ်သည်"],
+            ["carve","carved","carved","carves","carving","ထွင်းသည်"],
+            ["cash","cashed","cashed","cashes","cashing","ငွေထုတ်သည်"],
+            ["cast","cast","cast","casts","casting","လှဲသည်"],
+            ["catch","caught","caught","catches","catching","ဖမ်းသည်"],
+            ["cause","caused","caused","causes","causing","ဖြစ်စေသည်"],
+            ["cease","ceased","ceased","ceases","ceasing","ရပ်စဲသည်"],
+            ["celebrate","celebrated","celebrated","celebrates","celebrating","ကျင်းပသည်"],
+            ["challenge","challenged","challenged","challenges","challenging","စိန်ခေါ်သည်"],
+            ["change","changed","changed","changes","changing","ပြောင်းလဲသည်"],
+            ["charge","charged","charged","charges","charging","တာဝန်ပေးသည်"],
+            ["chase","chased","chased","chases","chasing","လိုက်ဖမ်းသည်"],
+            ["chat","chatted","chatted","chats","chatting","စကားပြောသည်"],
+            ["check","checked","checked","checks","checking","စစ်ဆေးသည်"],
+            ["cheer","cheered","cheered","cheers","cheering","အားပေးသည်"],
+            ["chew","chewed","chewed","chews","chewing","ဝါးသည်"],
+            ["chide","chid","chid/children","chides","chiding","ဆူသည်"],
+            ["chip","chipped","chipped","chips","chipping","အပိုင်းအစထုတ်သည်"],
+            ["choke","choked","choked","chokes","choking","ညှစ်သည်"],
+            ["choose","chose","chosen","chooses","choosing","ရွေးသည်"],
+            ["classify","classified","classified","classifies","classifying","အမျိုးအစားခွဲသည်"],
+            ["clean","cleaned","cleaned","cleans","cleaning","သန့်ရှင်းသည်"],
+            ["cleave","clove/cleft","cloven/cleft","cleaves","cleaving","ခွဲသည်"],
+            ["click","clicked","clicked","clicks","clicking","ကလစ်နှိပ်သည်"],
+            ["climb","climbed","climbed","climbs","climbing","တက်သည်"],
+            ["cling","clung","clung","clings","clinging","တွယ်ကပ်သည်"],
+            ["close","closed","closed","closes","closing","ပိတ်သည်"],
+            ["clothe","clad","clad","clothes","clothing","ဝတ်ဆင်သည်"],
+            ["clutch","clutched","clutched","clutches","clutching","ဆုပ်ကိုင်သည်"],
+            ["collapse","collapsed","collapsed","collapses","collapsing","ပြိုလဲသည်"],
+            ["collect","collected","collected","collects","collecting","စုဆောင်းသည်"],
+            ["colour","coloured","coloured","colours","colouring","ဆေးခြယ်သည်"],
+            ["come","came","come","comes","coming","လာသည်"],
+            ["comment","commented","commented","comments","commenting","မှတ်ချက်ပေးသည်"],
+            ["compare","compared","compared","compares","comparing","နှိုင်းယှဉ်သည်"],
+            ["compel","compelled","compelled","compels","compelling","အတင်းအကြပ်ခိုင်းသည်"],
+            ["compete","competed","competed","competes","competing","ပြိုင်သည်"],
+            ["complain","complained","complained","complains","complaining","တိုင်ကြားသည်"],
+            ["complete","completed","completed","completes","completing","ပြီးမြောက်သည်"],
+            ["conclude","concluded","concluded","concludes","concluding","နိဂုံးချုပ်သည်"],
+            ["conduct","conducted","conducted","conducts","conducting","ဦးဆောင်သည်"],
+            ["confess","confessed","confessed","confesses","confessing","ဝန်ခံသည်"],
+            ["confine","confined","confined","confines","confining","ကန့်သတ်သည်"],
+            ["confiscate","confiscated","confiscated","confiscates","confiscating","သိမ်းဆည်းသည်"],
+            ["confuse","confused","confused","confuses","confusing","ရှုပ်ထွေးစေသည်"],
+            ["congratulate","congratulated","congratulated","congratulates","congratulating","ဂုဏ်ပြုသည်"],
+            ["connect","connected","connected","connects","connecting","ဆက်သွယ်သည်"],
+            ["connote","connoted","connoted","connotes","connoting","အဓိပ္ပာယ်ဆောင်သည်"],
+            ["conquer","conquered","conquered","conquers","conquering","အောင်မြင်သည်"],
+            ["consecrate","consecrated","consecrated","consecrates","consecrating","သန့်ရှင်းစေသည်"],
+            ["consent","consented","consented","consents","consenting","သဘောတူသည်"],
+            ["conserve","conserved","conserved","conserves","conserving","ထိန်းသိမ်းသည်"],
+            ["consider","considered","considered","considers","considering","ထည့်သွင်းစဉ်းစားသည်"],
+            ["consign","consigned","consigned","consigns","consigning","အပ်နှင်းသည်"],
+            ["consist","consisted","consisted","consists","consisting","ပါဝင်သည်"],
+            ["console","consoled","consoled","consoles","consoling","နှစ်သိမ့်သည်"],
+            ["consort","consorted","consorted","consorts","consorting","ပေါင်းသင်းသည်"],
+            ["conspire","conspired","conspired","conspires","conspiring","ကြံစည်သည်"],
+            ["constitute","constituted","constituted","constitutes","constituting","ဖွဲ့စည်းသည်"],
+            ["constrain","constrained","constrained","constrains","constraining","အတင်းအကြပ်ခိုင်းသည်"],
+            ["construct","constructed","constructed","constructs","constructing","ဆောက်လုပ်သည်"],
+            ["construe","construed","construed","construes","construing","အနက်ဖွင့်သည်"],
+            ["consult","consulted","consulted","consults","consulting","တိုင်ပင်သည်"],
+            ["contain","contained","contained","contains","containing","ပါဝင်သည်"],
+            ["contemn","contemned","contemned","contemns","contemning","မထီလေးစားပြုသည်"],
+            ["contend","contended","contended","contends","contending","ပြိုင်ဆိုင်သည်"],
+            ["contest","contested","contested","contests","contesting","ပြိုင်ပွဲဝင်သည်"],
+            ["continue","continued","continued","continues","continuing","ဆက်လက်သည်"],
+            ["contract","contracted","contracted","contracts","contracting","ကျုံ့သည်"],
+            ["contradict","contradicted","contradicted","contradicts","contradicting","ဆန့်ကျင်ပြောသည်"],
+            ["contrast","contrasted","contrasted","contrasts","contrasting","နှိုင်းယှဉ်သည်"],
+            ["contribute","contributed","contributed","contributes","contributing","ပံ့ပိုးသည်"],
+            ["contrive","contrived","contrived","contrives","contriving","ကြံဆသည်"],
+            ["control","controlled","controlled","controls","controlling","ထိန်းချုပ်သည်"],
+            ["convene","convened","convened","convenes","convening","ခေါ်ယူသည်"],
+            ["converge","converged","converged","converges","converging","ဆုံသည်"],
+            ["converse","conversed","conversed","converses","conversing","စကားပြောသည်"],
+            ["convert","converted","converted","converts","converting","ပြောင်းလဲသည်"],
+            ["convey","conveyed","conveyed","conveys","conveying","ပို့ဆောင်သည်"],
+            ["convict","convicted","convicted","convicts","convicting","ပြစ်ဒဏ်ပေးသည်"],
+            ["convince","convinced","convinced","convinces","convincing","စည်းရုံးသည်"],
+            ["coo","cooed","cooed","coos","cooing","ချိုသာစွာပြောသည်"],
+            ["cook","cooked","cooked","cooks","cooking","ချက်ပြုတ်သည်"],
+            ["cool","cooled","cooled","cools","cooling","အေးစေသည်"],
+            ["co-operate","co-operated","co-operated","co-operates","co-operating","ပူးပေါင်းဆောင်ရွက်သည်"],
+            ["cope","coped","coped","copes","coping","ရင်ဆိုင်သည်"],
+            ["copy","copied","copied","copies","copying","ကူးသည်"],
+            ["correct","corrected","corrected","corrects","correcting","ပြင်ဆင်သည်"],
+            ["correspond","corresponded","corresponded","corresponds","corresponding","ဆက်သွယ်သည်"],
+            ["corrode","corroded","corroded","corrodes","corroding","ချေးတက်သည်"],
+            ["corrupt","corrupted","corrupted","corrupts","corrupting","အကျင့်ပျက်စေသည်"],
+            ["cost","cost","cost","costs","costing","တန်ဖိုးရှိသည်"],
+            ["cough","coughed","coughed","coughs","coughing","ချောင်းဆိုးသည်"],
+            ["counsel","counselled","counselled","counsels","counselling","အကြံပေးသည်"],
+            ["count","counted","counted","counts","counting","ရေတွက်သည်"],
+            ["course","coursed","coursed","courses","coursing","စီးဆင်းသည်"],
+            ["cover","covered","covered","covers","covering","ဖုံးအုပ်သည်"],
+            ["cower","cowered","cowered","cowers","cowering","ကြောက်ရွံ့သည်"],
+            ["crack","cracked","cracked","cracks","cracking","အက်သည်"],
+            ["crackle","crackled","crackled","crackles","crackling","ကြွပ်ရွသည်"],
+            ["crash","crashed","crashed","crashes","crashing","တိုက်မိသည်"],
+            ["crave","craved","craved","craves","craving","တောင့်တသည်"],
+            ["create","created","created","creates","creating","ဖန်တီးသည်"],
+            ["creep","crept","crept","creeps","creeping","တွားသည်"],
+            ["crib","cribbed","cribbed","cribs","cribbing","ခိုးသည်"],
+            ["cross","crossed","crossed","crosses","crossing","ဖြတ်ကူးသည်"],
+            ["crowd","crowded","crowded","crowds","crowding","ပြည့်ကျပ်သည်"],
+            ["crush","crushed","crushed","crushes","crushing","ကြိတ်သည်"],
+            ["cry","cried","cried","cries","crying","ငိုသည်"],
+            ["curb","curbed","curbed","curbs","curbing","ထိန်းချုပ်သည်"],
+            ["cure","cured","cured","cures","curing","ပျောက်ကင်းစေသည်"],
+            ["curve","curved","curved","curves","curving","ကွေးသည်"],
+            ["cut","cut","cut","cuts","cutting","ဖြတ်သည်"],
+            ["cycle","cycled","cycled","cycles","cycling","စက်ဘီးစီးသည်"],
+            ["damage","damaged","damaged","damages","damaging","ပျက်စီးစေသည်"],
+            ["damp","damped","damped","damps","damping","စိုစွတ်စေသည်"],
+            ["dance","danced","danced","dances","dancing","ကသည်"],
+            ["dare","dared","dared","dares","daring","ရဲသည်"],
+            ["dash","dashed","dashed","dashes","dashing","ပြေးသည်"],
+            ["dazzle","dazzled","dazzled","dazzles","dazzling","တောက်ပစေသည်"],
+            ["deal","dealt","dealt","deals","dealing","ဆက်ဆံသည်"],
+            ["decay","decayed","decayed","decays","decaying","ဆွေးမြေ့သည်"],
+            ["decide","decided","decided","decides","deciding","ဆုံးဖြတ်သည်"],
+            ["declare","declared","declared","declares","declaring","ကြေညာသည်"],
+            ["decorate","decorated","decorated","decorates","decorating","အလှဆင်သည်"],
+            ["decrease","decreased","decreased","decreases","decreasing","လျော့ကျသည်"],
+            ["dedicate","dedicated","dedicated","dedicates","dedicating","ရည်စူးသည်"],
+            ["delay","delayed","delayed","delays","delaying","နှောင့်နှေးသည်"],
+            ["delete","deleted","deleted","deletes","deleting","ဖျက်သည်"],
+            ["deny","denied","denied","denies","denying","ငြင်းဆန်သည်"],
+            ["depend","depended","depended","depends","depending","မူတည်သည်"],
+            ["deprive","deprived","deprived","deprives","depriving","ဆုံးရှုံးစေသည်"],
+            ["derive","derived","derived","derives","deriving","ဆင်းသက်သည်"],
+            ["describe","described","described","describes","describing","ဖော်ပြသည်"],
+            ["desire","desired","desired","desires","desiring","အလိုရှိသည်"],
+            ["destroy","destroyed","destroyed","destroys","destroying","ဖျက်ဆီးသည်"],
+            ["detach","detached","detached","detaches","detaching","ခွဲထုတ်သည်"],
+            ["detect","detected","detected","detects","detecting","ရှာဖွေတွေ့ရှိသည်"],
+            ["determine","determined","determined","determines","determining","ဆုံးဖြတ်သည်"],
+            ["develop","developed","developed","develops","developing","ဖွံ့ဖြိုးစေသည်"],
+            ["die","died","died","dies","dying","သေသည်"],
+            ["differ","differed","differed","differs","differing","ကွဲပြားသည်"],
+            ["dig","dug","dug","digs","digging","တူးသည်"],
+            ["digest","digested","digested","digests","digesting","အစာချေသည်"],
+            ["dim","dimmed","dimmed","dims","dimming","မှိန်သည်"],
+            ["diminish","diminished","diminished","diminishes","diminishing","လျော့နည်းသည်"],
+            ["dine","dined","dined","dines","dining","စားသည်"],
+            ["dip","dipped","dipped","dips","dipping","နှစ်သည်"],
+            ["direct","directed","directed","directs","directing","ညွှန်ကြားသည်"],
+            ["disappear","disappeared","disappeared","disappears","disappearing","ပျောက်ကွယ်သည်"],
+            ["discover","discovered","discovered","discovers","discovering","ရှာဖွေတွေ့ရှိသည်"],
+            ["discuss","discussed","discussed","discusses","discussing","ဆွေးနွေးသည်"],
+            ["disobey","disobeyed","disobeyed","disobeys","disobeying","မနာခံသည်"],
+            ["display","displayed","displayed","displays","displaying","ပြသသည်"],
+            ["dispose","disposed","disposed","disposes","disposing","စွန့်ပစ်သည်"],
+            ["distribute","distributed","distributed","distributes","distributing","ဖြန့်ဝေသည်"],
+            ["disturb","disturbed","disturbed","disturbs","disturbing","အနှောင့်အယှက်ပေးသည်"],
+            ["disuse","disused","disused","disuses","disusing","အသုံးမပြုတော့"],
+            ["dive","dived","dived","dives","diving","ငုပ်သည်"],
+            ["divide","divided","divided","divides","dividing","ခွဲဝေသည်"],
+            ["do","did","done","does","doing","လုပ်သည်"],
+            ["donate","donated","donated","donates","donating","လှူသည်"],
+            ["download","downloaded","downloaded","downloads","downloading","ဒေါင်းလုဒ်ဆွဲသည်"],
+            ["drag","dragged","dragged","drags","dragging","ဆွဲသည်"],
+            ["draw","drew","drawn","draws","drawing","ရေးဆွဲသည်"],
+            ["dream","dreamt","dreamt","dreams","dreaming","အိပ်မက်မက်သည်"],
+            ["dress","dressed","dressed","dresses","dressing","ဝတ်ဆင်သည်"],
+            ["drill","drilled","drilled","drills","drilling","တူးသည်"],
+            ["drink","drank","drunk","drinks","drinking","သောက်သည်"],
+            ["drive","drove","driven","drives","driving","မောင်းသည်"],
+            ["drop","dropped","dropped","drops","dropping","ပစ်ချသည်"],
+            ["dry","dried","dried","dries","drying","ခြောက်သည်"],
+            ["dump","dumped","dumped","dumps","dumping","စွန့်ပစ်သည်"],
+            ["dwell","dwelt","dwelt","dwells","dwelling","နေထိုင်သည်"],
+            ["dye","dyed","dyed","dyes","dyeing","ဆေးဆိုးသည်"],
+            ["earn","earned","earned","earns","earning","ရရှိသည်"],
+            ["eat","ate","eaten","eats","eating","စားသည်"],
+            ["educate","educated","educated","educates","educating","ပညာပေးသည်"],
+            ["empower","empowered","empowered","empowers","empowering","ခွန်အားပေးသည်"],
+            ["empty","emptied","emptied","empties","emptying","ဗလာဖြစ်စေသည်"],
+            ["encircle","encircled","encircled","encircles","encircling","ဝိုင်းရံသည်"],
+            ["encourage","encouraged","encouraged","encourages","encouraging","အားပေးသည်"],
+            ["encroach","encroached","encroached","encroaches","encroaching","ကျူးကျော်သည်"],
+            ["endanger","endangered","endangered","endangers","endangering","အန္တရာယ်ဖြစ်စေသည်"],
+            ["endorse","endorsed","endorsed","endorses","endorsing","ထောက်ခံသည်"],
+            ["endure","endured","endured","endures","enduring","သည်းခံသည်"],
+            ["engrave","engraved","engraved","engraves","engraving","ထွင်းသည်"],
+            ["enjoy","enjoyed","enjoyed","enjoys","enjoying","ပျော်ရွှင်သည်"],
+            ["enlarge","enlarged","enlarged","enlarges","enlarging","ကြီးချဲ့သည်"],
+            ["enlighten","enlightened","enlightened","enlightens","enlightening","ဉာဏ်အလင်းပေးသည်"],
+            ["enter","entered","entered","enters","entering","ဝင်သည်"],
+            ["envy","envied","envied","envies","envying","မနာလိုဖြစ်သည်"],
+            ["erase","erased","erased","erases","erasing","ဖျက်သည်"],
+            ["escape","escaped","escaped","escapes","escaping","လွတ်မြောက်သည်"],
+            ["evaporate","evaporated","evaporated","evaporates","evaporating","အငွေ့ပျံသည်"],
+            ["exchange","exchanged","exchanged","exchanges","exchanging","လဲလှယ်သည်"],
+            ["exclaim","exclaimed","exclaimed","exclaims","exclaiming","အော်ပြောသည်"],
+            ["exclude","excluded","excluded","excludes","excluding","ဖယ်ထုတ်သည်"],
+            ["exist","existed","existed","exists","existing","တည်ရှိသည်"],
+            ["expand","expanded","expanded","expands","expanding","ချဲ့ထွင်သည်"],
+            ["expect","expected","expected","expects","expecting","မျှော်လင့်သည်"],
+            ["explain","explained","explained","explains","explaining","ရှင်းပြသည်"],
+            ["explore","explored","explored","explores","exploring","စူးစမ်းသည်"],
+            ["express","expressed","expressed","expresses","expressing","ဖော်ပြသည်"],
+            ["extend","extended","extended","extends","extending","တိုးချဲ့သည်"],
+            ["eye","eyed","eyed","eyes","eyeing","ကြည့်သည်"],
+            ["face","faced","faced","faces","facing","ရင်ဆိုင်သည်"],
+            ["fail","failed","failed","fails","failing","ပျက်ကွက်သည်"],
+            ["faint","fainted","fainted","faints","fainting","မူးမေ့သည်"],
+            ["fall","fell","fallen","falls","falling","ကျသည်"],
+            ["fan","fanned","fanned","fans","faning","လေမှုတ်သည်"],
+            ["fancy","fancied","fancied","fancies","fancying","ကြိုက်သည်"],
+            ["favour","favoured","favoured","favours","favouring","မျက်နှာသာပေးသည်"],
+            ["fax","faxed","faxed","faxes","faxing","ဖက်စ်ပို့သည်"],
+            ["feed","fed","fed","feeds","feeding","ကျွေးသည်"],
+            ["feel","felt","felt","feels","feeling","ခံစားသည်"],
+            ["ferry","ferried","ferried","ferries","ferrying","ဖယ်ရီစီးသည်"],
+            ["fetch","fetched","fetched","fetches","fetching","ယူဆောင်သည်"],
+            ["fight","fought","fought","fights","fighting","တိုက်ခိုက်သည်"],
+            ["fill","filled","filled","fills","filling","ဖြည့်သည်"],
+            ["find","found","found","finds","finding","ရှာဖွေတွေ့ရှိသည်"],
+            ["finish","finished","finished","finishes","finishing","ပြီးဆုံးသည်"],
+            ["fish","fished","fished","fishes","fishing","ငါးဖမ်းသည်"],
+            ["fit","fitted","fitted","fits","fitting","အံဝင်ခွင်ကျဖြစ်သည်"],
+            ["fix","fixed","fixed","fixes","fixing","ပြင်ဆင်သည်"],
+            ["fizz","fizzed","fizzed","fizzes","fizzing","ဆူညံသည်"],
+            ["flap","flapped","flapped","flaps","flapping","တောင်ပံခတ်သည်"],
+            ["flash","flashed","flashed","flashes","flashing","လျှပ်တစ်ပြက်ဖြစ်သည်"],
+            ["flee","fled","fled","flees","fleeing","ထွက်ပြေးသည်"],
+            ["fling","flung","flung","flings","flinging","ပစ်ချသည်"],
+            ["float","floated","floated","floats","floating","မျောသည်"],
+            ["flop","flopped","flopped","flops","flopping","လဲကျသည်"],
+            ["fly","flew","flown","flies","flying","ပျံသန်းသည်"],
+            ["fold","folded","folded","folds","folding","ခေါက်သည်"],
+            ["follow","followed","followed","follows","following","လိုက်သည်"],
+            ["forbid","forbade","forbidden","forbids","forbidding","တားမြစ်သည်"],
+            ["force","forced","forced","forces","forcing","အတင်းအကြပ်ခိုင်းသည်"],
+            ["forecast","forecast","forecast","forecasts","forecasting","ကြိုတင်ဟောသည်"],
+            ["foretell","foretold","foretold","foretells","foretelling","ကြိုဟောသည်"],
+            ["forget","forgot","forgotten","forgets","forgetting","မေ့သည်"],
+            ["forgive","forgave","forgiven","forgives","forgiving","ခွင့်လွှတ်သည်"],
+            ["form","formed","formed","forms","forming","ဖွဲ့စည်းသည်"],
+            ["forsake","forsook","forsaken","forsakes","forsaking","စွန့်ခွာသည်"],
+            ["found","founded","founded","founds","founding","တည်ထောင်သည်"],
+            ["frame","framed","framed","frames","framing","ဘောင်ခတ်သည်"],
+            ["free","freed","freed","frees","freeing","လွှတ်ပေးသည်"],
+            ["freeze","froze","frozen","freezes","freezing","အေးခဲသည်"],
+            ["frighten","frightened","frightened","frightens","frightening","ကြောက်စေသည်"],
+            ["fry","fried","fried","fries","frying","ကြော်သည်"],
+            ["fulfil","fulfilled","fulfilled","fulfils","fulfilling","ဖြည့်ဆည်းသည်"],
+            ["gag","gagged","gagged","gags","gagging","ပါးစပ်ပိတ်သည်"],
+            ["gain","gained","gained","gains","gaining","ရရှိသည်"],
+            ["gainsay","gainsaid","gainsaid","gainsays","gainsaying","ငြင်းဆန်သည်"],
+            ["gash","gashed","gashed","gashes","gashing","ခွဲစိတ်သည်"],
+            ["gaze","gazed","gazed","gazes","gazing","စိုက်ကြည့်သည်"],
+            ["get","got","got","gets","getting","ရသည်"],
+            ["give","gave","given","gives","giving","ပေးသည်"],
+            ["glance","glanced","glanced","glances","glancing","အကဲခတ်ကြည့်သည်"],
+            ["glitter","glittered","glittered","glitters","glittering","တောက်ပသည်"],
+            ["glow","glowed","glowed","glows","glowing","တောက်ပသည်"],
+            ["go","went","gone","goes","going","သွားသည်"],
+            ["google","googled","googled","googles","googling","ဂူဂဲလ်ရှာသည်"],
+            ["govern","governed","governed","governs","governing","အုပ်ချုပ်သည်"],
+            ["grab","grabbed","grabbed","grabs","grabbing","ဆုပ်ကိုင်သည်"],
+            ["grade","graded","graded","grades","grading","အဆင့်သတ်မှတ်သည်"],
+            ["grant","granted","granted","grants","granting","ခွင့်ပြုသည်"],
+            ["greet","greeted","greeted","greets","greeting","နှုတ်ဆက်သည်"],
+            ["grind","ground","ground","grinds","grinding","ကြိတ်သည်"],
+            ["grip","gripped","gripped","grips","gripping","ဆုပ်ကိုင်သည်"],
+            ["grow","grew","grown","grows","growing","ကြီးထွားသည်"],
+            ["guard","guarded","guarded","guards","guarding","အစောင့်အရှောက်ပြုသည်"],
+            ["guess","guessed","guessed","guesses","guessing","ခန့်မှန်းသည်"],
+            ["guide","guided","guided","guides","guiding","လမ်းပြသည်"],
+            ["handle","handled","handled","handles","handling","ကိုင်တွယ်သည်"],
+            ["hang","hung","hung","hangs","hanging","ဆွဲထားသည်"],
+            ["happen","happened","happened","happens","happening","ဖြစ်ပျက်သည်"],
+            ["harm","harmed","harmed","harms","harming","ထိခိုက်စေသည်"],
+            ["hatch","hatched","hatched","hatches","hatching","ပေါက်သည်"],
+            ["hate","hated","hated","hates","hating","မုန်းသည်"],
+            ["have","had","had","has","having","ရှိသည်"],
+            ["heal","healed","healed","heals","healing","ပျောက်ကင်းစေသည်"],
+            ["hear","heard","heard","hears","hearing","ကြားသည်"],
+            ["heave","hove","hove","heaves","heaving","ကြွသည်"],
+            ["help","helped","helped","helps","helping","ကူညီသည်"],
+            ["hew","hewed","hewed","hews","hewing","ခုတ်သည်"],
+            ["hide","hid","hidden","hides","hiding","ဝှက်သည်"],
+            ["hinder","hindered","hindered","hinders","hindering","ဟန့်တားသည်"],
+            ["hiss","hissed","hissed","hisses","hissing","ရှူရှိုက်သည်"],
+            ["hit","hit","hit","hits","hitting","ရိုက်သည်"],
+            ["hoax","hoaxed","hoaxed","hoaxes","hoaxing","လှည့်ဖြားသည်"],
+            ["hold","held","held","holds","holding","ကိုင်သည်"],
+            ["hop","hopped","hopped","hops","hopping","ခုန်သည်"],
+            ["hope","hoped","hoped","hopes","hoping","မျှော်လင့်သည်"],
+            ["horrify","horrified","horrified","horrifies","horrifying","ထိတ်လန့်စေသည်"],
+            ["hug","hugged","hugged","hugs","hugging","ဖက်သည်"],
+            ["humiliate","humiliated","humiliated","humiliates","humiliating","အရှက်ရစေသည်"],
+            ["hunt","hunted","hunted","hunts","hunting","အမဲလိုက်သည်"],
+            ["hurl","hurled","hurled","hurls","hurling","ပစ်ချသည်"],
+            ["hurry","hurried","hurried","hurries","hurrying","အလျင်စလိုလုပ်သည်"],
+            ["hustle","hustled","hustled","hustles","hustling","တွန်းထုတ်သည်"],
+            ["hypnotize","hypnotized","hypnotized","hypnotizes","hypnotizing","မျက်လုံးသွင်းသည်"],
+            ["idealize","idealized","idealized","idealizes","idealizing","စံပြအဖြစ်သတ်မှတ်သည်"],
+            ["identify","identified","identified","identifies","identifying","ဖော်ထုတ်သည်"],
+            ["idolize","idolized","idolized","idolizes","idolizing","ကိုးကွယ်သည်"],
+            ["ignite","ignited","ignited","ignites","igniting","မီးစွဲသည်"],
+            ["ignore","ignored","ignored","ignores","ignoring","လျစ်လျူရှုသည်"],
+            ["ill-treat","ill-treated","ill-treated","ill-treats","ill-treating","ညှဉ်းပန်းသည်"],
+            ["illuminate","illuminated","illuminated","illuminates","illuminating","အလင်းပေးသည်"],
+            ["illustrate","illustrated","illustrated","illustrates","illustrating","သရုပ်ဖော်သည်"],
+            ["imagine","imagined","imagined","imagines","imagining","စိတ်ကူးသည်"],
+            ["imbibe","imbibed","imbibed","imbibes","imbibing","စုပ်ယူသည်"],
+            ["imitate","imitated","imitated","imitates","imitating","တုပသည်"],
+            ["immerse","immersed","immersed","immerses","immersing","နှစ်မြှုပ်သည်"],
+            ["immolate","immolated","immolated","immolates","immolating","ယဇ်ပူဇော်သည်"],
+            ["immure","immured","immured","immures","immuring","ထောင်ချသည်"],
+            ["impair","impaired","impaired","impairs","impairing","အားနည်းစေသည်"],
+            ["impart","imparted","imparted","imparts","imparting","ဝေမျှသည်"],
+            ["impeach","impeached","impeached","impeaches","impeaching","စွဲချက်တင်သည်"],
+            ["impede","impeded","impeded","impedes","impeding","ဟန့်တားသည်"],
+            ["impel","impelled","impelled","impels","impelling","တွန်းအားပေးသည်"],
+            ["impend","impended","impended","impends","impending","ချဉ်းကပ်သည်"],
+            ["imperil","imperilled","imperilled","imperils","imperilling","အန္တရာယ်ဖြစ်စေသည်"],
+            ["impinge","impinged","impinged","impinges","impinging","ထိခိုက်သည်"],
+            ["implant","implanted","implanted","implants","implanting","စိုက်သွင်းသည်"],
+            ["implicate","implicated","implicated","implicates","implicating","ပါဝင်စေသည်"],
+            ["implode","imploded","imploded","implodes","imploding","အတွင်းသို့ပြိုကျသည်"],
+            ["implore","implored","implored","implores","imploring","တောင်းပန်သည်"],
+            ["imply","implied","implied","implies","implying","ဆိုလိုသည်"],
+            ["import","imported","imported","imports","importing","တင်သွင်းသည်"],
+            ["impose","imposed","imposed","imposes","imposing","ချမှတ်သည်"],
+            ["impress","impressed","impressed","impresses","impressing","အထင်ကြီးစေသည်"],
+            ["imprint","imprinted","imprinted","imprints","imprinting","ရိုက်နှိပ်သည်"],
+            ["imprison","imprisoned","imprisoned","imprisons","imprisoning","ထောင်ချသည်"],
+            ["improve","improved","improved","improves","improving","တိုးတက်စေသည်"],
+            ["inaugurate","inaugurated","inaugurated","inaugurates","inaugurating","ဖွင့်လှစ်သည်"],
+            ["incise","incised","incised","incises","incising","ခွဲစိတ်သည်"],
+            ["include","included","included","includes","including","ထည့်သွင်းသည်"],
+            ["increase","increased","increased","increases","increasing","တိုးမြှင့်သည်"],
+            ["inculcate","inculcated","inculcated","inculcates","inculcating","သွတ်သွင်းသည်"],
+            ["indent","indented","indented","indents","indenting","အနားသတ်ချဲ့သည်"],
+            ["indicate","indicated","indicated","indicates","indicating","ညွှန်ပြသည်"],
+            ["induce","induced","induced","induces","inducing","ဆွဲဆောင်သည်"],
+            ["indulge","indulged","indulged","indulges","indulging","အလိုလိုက်သည်"],
+            ["infect","infected","infected","infects","infecting","ကူးစက်စေသည်"],
+            ["infest","infested","infested","infests","infesting","ကျရောက်သည်"],
+            ["inflame","inflamed","inflamed","inflames","inflaming","လောင်ကျွမ်းစေသည်"],
+            ["inflate","inflated","inflated","inflates","inflating","ဖောင်းစေသည်"],
+            ["inflect","inflected","inflected","inflects","inflecting","ပြောင်းလဲသည်"],
+            ["inform","informed","informed","informs","informing","အကြောင်းကြားသည်"],
+            ["infringe","infringed","infringed","infringes","infringing","ကျူးလွန်သည်"],
+            ["infuse","infused","infused","infuses","infusing","သွင်းသည်"],
+            ["ingest","ingested","ingested","ingests","ingesting","မျိုချသည်"],
+            ["inhabit","inhabited","inhabited","inhabits","inhabiting","နေထိုင်သည်"],
+            ["inhale","inhaled","inhaled","inhales","inhaling","ရှူသွင်းသည်"],
+            ["inherit","inherited","inherited","inherits","inheriting","အမွေဆက်ခံသည်"],
+            ["initiate","initiated","initiated","initiates","initiating","စတင်သည်"],
+            ["inject","injected","injected","injects","injecting","ထိုးသွင်းသည်"],
+            ["injure","injured","injured","injures","injuring","ဒဏ်ရာရစေသည်"],
+            ["inlay","inlaid","inlaid","inlays","inlaying","ဖြည့်သွင်းသည်"],
+            ["innovate","innovated","innovated","innovates","innovating","တီထွင်သည်"],
+            ["input","input","input","inputs","inputting","ထည့်သွင်းသည်"],
+            ["inquire","inquired","inquired","inquires","inquiring","စုံစမ်းသည်"],
+            ["inscribe","inscribed","inscribed","inscribes","inscribing","ရေးထိုးသည်"],
+            ["insert","inserted","inserted","inserts","inserting","ထည့်သွင်းသည်"],
+            ["inspect","inspected","inspected","inspects","inspecting","စစ်ဆေးသည်"],
+            ["inspire","inspired","inspired","inspires","inspiring","လှုံ့ဆော်သည်"],
+            ["install","installed","installed","installs","installing","တပ်ဆင်သည်"],
+            ["insult","insulted","insulted","insults","insulting","စော်ကားသည်"],
+            ["insure","insured","insured","insures","insuring","အာမခံသည်"],
+            ["integrate","integrated","integrated","integrates","integrating","ပေါင်းစည်းသည်"],
+            ["introduce","introduced","introduced","introduces","introducing","မိတ်ဆက်သည်"],
+            ["invent","invented","invented","invents","inventing","တီထွင်သည်"],
+            ["invite","invited","invited","invites","inviting","ဖိတ်ကြားသည်"],
+            ["join","joined","joined","joins","joining","ပူးပေါင်းသည်"],
+            ["jump","jumped","jumped","jumps","jumping","ခုန်သည်"],
+            ["justify","justified","justified","justifies","justifying","တရားမျှတစေသည်"],
+            ["keep","kept","kept","keeps","keeping","ထားသည်"],
+            ["kick","kicked","kicked","kicks","kicking","ကန်သည်"],
+            ["kid","kidded","kidded","kids","kidding","နောက်ပြောင်သည်"],
+            ["kill","killed","killed","kills","killing","သတ်သည်"],
+            ["kiss","kissed","kissed","kisses","kissing","နမ်းသည်"],
+            ["kneel","knelt","knelt","kneels","kneeling","ဒူးထောက်သည်"],
+            ["knit","knit","knit","knits","knitting","ထိုးသည်"],
+            ["knock","knocked","knocked","knocks","knocking","ခေါက်သည်"],
+            ["know","knew","known","knows","knowing","သိသည်"],
+            ["lade","laded","laded","lades","lading","တင်သည်"],
+            ["land","landed","landed","lands","landing","ဆင်းသက်သည်"],
+            ["last","lasted","lasted","lasts","lasting","ကြာရှည်သည်"],
+            ["latch","latched","latched","latches","latching","ချိတ်သည်"],
+            ["laugh","laughed","laughed","laughs","laughing","ရယ်သည်"],
+            ["lay","laid","laid","lays","laying","ချသည်"],
+            ["lead","led","led","leads","leading","ဦးဆောင်သည်"],
+            ["leak","leaked","leaked","leaks","leaking","ယိုစိမ့်သည်"],
+            ["lean","leant","leant","leans","leaning","မှီသည်"],
+            ["leap","leapt","leapt","leaps","leaping","ခုန်သည်"],
+            ["learn","learnt","learnt","learns","learning","သင်ယူသည်"],
+            ["leave","left","left","leaves","leaving","ထွက်ခွာသည်"],
+            ["leer","leered","leered","leers","leering","ကြည့်သည်"],
+            ["lend","lent","lent","lends","lending","ငှားသည်"],
+            ["let","let","let","lets","letting","ခွင့်ပြုသည်"],
+            ["lick","licked","licked","licks","licking","လျက်သည်"],
+            ["lie","lay","lain","lies","lying","အိပ်သည်"],
+            ["lie","lied","lied","lies","lying","လိမ်ညာသည်"],
+            ["lift","lifted","lifted","lifts","lifting","မြှောက်သည်"],
+            ["light","lit","lit","lights","lighting","မီးထွန်းသည်"],
+            ["like","liked","liked","likes","liking","ကြိုက်သည်"],
+            ["limp","limped","limped","limps","limping","ခြေဆွဲသည်"],
+            ["listen","listened","listened","listens","listening","နားထောင်သည်"],
+            ["live","lived","lived","lives","living","နေထိုင်သည်"],
+            ["look","looked","looked","looks","looking","ကြည့်သည်"],
+            ["lose","lost","lost","loses","losing","ရှုံးသည်"],
+            ["love","loved","loved","loves","loving","ချစ်သည်"],
+            ["magnify","magnified","magnified","magnifies","magnifying","ချဲ့သည်"],
+            ["maintain","maintained","maintained","maintains","maintaining","ထိန်းသိမ်းသည်"],
+            ["make","made","made","makes","making","လုပ်သည်"],
+            ["manage","managed","managed","manages","managing","စီမံသည်"],
+            ["march","marched","marched","marches","marching","ချီတက်သည်"],
+            ["mark","marked","marked","marks","marking","အမှတ်အသားပြုသည်"],
+            ["marry","married","married","marries","marrying","လက်ထပ်သည်"],
+            ["mash","mashed","mashed","mashes","mashing","ကြိတ်သည်"],
+            ["match","matched","matched","matches","matching","လိုက်ဖက်သည်"],
+            ["matter","mattered","mattered","matters","mattering","အရေးပါသည်"],
+            ["mean","meant","meant","means","meaning","ဆိုလိုသည်"],
+            ["measure","measured","measured","measures","measuring","တိုင်းတာသည်"],
+            ["meet","met","met","meets","meeting","တွေ့ဆုံသည်"],
+            ["melt","melted","melted","melts","melting","အရည်ပျော်သည်"],
+            ["merge","merged","merged","merges","merging","ပေါင်းစည်းသည်"],
+            ["mew","mewed","mewed","mews","mewing","မည်သည်"],
+            ["migrate","migrated","migrated","migrates","migrating","ရွှေ့ပြောင်းသည်"],
+            ["milk","milked","milked","milks","milking","နို့ညှစ်သည်"],
+            ["mind","minded","minded","minds","minding","စိတ်ဝင်စားသည်"],
+            ["mislead","misled","misled","misleads","misleading","လမ်းလွှဲသည်"],
+            ["miss","missed","missed","misses","missing","လွဲချော်သည်"],
+            ["mistake","mistook","mistaken","mistakes","mistaking","မှားသည်"],
+            ["misuse","misused","misused","misuses","misusing","အလွဲသုံးသည်"],
+            ["mix","mixed","mixed","mixes","mixing","ရောသည်"],
+            ["moan","moaned","moaned","moans","moaning","ညည်းညူသည်"],
+            ["modify","modified","modified","modifies","modifying","ပြုပြင်သည်"],
+            ["moo","mooed","mooed","moos","mooing","မြည်သည်"],
+            ["motivate","motivated","motivated","motivates","motivating","လှုံ့ဆော်သည်"],
+            ["mould","moulded","moulded","moulds","moulding","ပုံသွင်းသည်"],
+            ["moult","moulted","moulted","moults","moulting","အမွှေးကြွေသည်"],
+            ["move","moved","moved","moves","moving","ရွေ့လျားသည်"],
+            ["mow","mowed","mown","mows","mowing","ရိတ်သည်"],
+            ["multiply","multiplied","multiplied","multiplies","multiplying","မြှောက်သည်"],
+            ["murmur","murmured","murmured","murmurs","murmuring","တီးတိုးပြောသည်"],
+            ["nail","nailed","nailed","nails","nailing","သံမှိုရိုက်သည်"],
+            ["nap","napped","napped","naps","napping","တစ်ရေးအိပ်သည်"],
+            ["need","needed","needed","needs","needing","လိုအပ်သည်"],
+            ["neglect","neglected","neglected","neglects","neglecting","လျစ်လျူရှုသည်"],
+            ["nip","nipped","nipped","nips","nipping","ကိုက်သည်"],
+            ["nod","nodded","nodded","nods","nodding","ခေါင်းညိတ်သည်"],
+            ["note","noted","noted","notes","noting","မှတ်သားသည်"],
+            ["notice","noticed","noticed","notices","noticing","သတိထားမိသည်"],
+            ["notify","notified","notified","notifies","notifying","အကြောင်းကြားသည်"],
+            ["nourish","nourished","nourished","nourishes","nourishing","အာဟာရဖြည့်သည်"],
+            ["nurse","nursed","nursed","nurses","nursing","သူနာပြုသည်"],
+            ["obey","obeyed","obeyed","obeys","obeying","နာခံသည်"],
+            ["oblige","obliged","obliged","obliges","obliging","အတင်းအကြပ်ခိုင်းသည်"],
+            ["observe","observed","observed","observes","observing","စောင့်ကြည့်သည်"],
+            ["obstruct","obstructed","obstructed","obstructs","obstructing","ပိတ်ဆို့သည်"],
+            ["obtain","obtained","obtained","obtains","obtaining","ရယူသည်"],
+            ["occupy","occupied","occupied","occupies","occupying","သိမ်းပိုက်သည်"],
+            ["occur","occurred","occurred","occurs","occurring","ဖြစ်ပေါ်သည်"],
+            ["offer","offered","offered","offers","offering","ကမ်းလှမ်းသည်"],
+            ["offset","offset","offset","offsets","offsetting","ထေမိသည်"],
+            ["omit","omitted","omitted","omits","omitting","ချန်လှပ်သည်"],
+            ["ooze","oozed","oozed","oozes","oozing","စိမ့်သည်"],
+            ["open","opened","opened","opens","opening","ဖွင့်သည်"],
+            ["operate","operated","operated","operates","operating","လုပ်ဆောင်သည်"],
+            ["opine","opined","opined","opines","opining","ထင်မြင်သည်"],
+            ["oppress","oppressed","oppressed","oppresses","oppressing","ဖိနှိပ်သည်"],
+            ["opt","opted","opted","opts","opting","ရွေးချယ်သည်"],
+            ["optimize","optimized","optimized","optimizes","optimizing","အကောင်းဆုံးဖြစ်စေသည်"],
+            ["order","ordered","ordered","orders","ordering","အမိန့်ပေးသည်"],
+            ["organize","organized","organized","organizes","organizing","စုစည်းသည်"],
+            ["originate","originated","originated","originates","originating","မူလဖြစ်သည်"],
+            ["output","output","output","outputs","outputting","ထုတ်ပေးသည်"],
+            ["overflow","overflowed","overflowed","overflows","overflowing","လျှံသည်"],
+            ["overtake","overtook","overtaken","overtakes","overtaking","ကျော်တက်သည်"],
+            ["owe","owed","owed","owes","owing","ကြွေးတင်သည်"],
+            ["own","owned","owned","owns","owning","ပိုင်ဆိုင်သည်"],
+            ["pacify","pacified","pacified","pacifies","pacifying","ငြိမ်းချမ်းစေသည်"],
+            ["paint","painted","painted","paints","painting","ဆေးခြယ်သည်"],
+            ["pardon","pardoned","pardoned","pardons","pardoning","ခွင့်လွှတ်သည်"],
+            ["part","parted","parted","parts","parting","ခွဲခွာသည်"],
+            ["partake","partook","partaken","partakes","partaking","ပါဝင်သည်"],
+            ["participate","participated","participated","participates","participating","ပါဝင်ဆောင်ရွက်သည်"],
+            ["pass","passed","passed","passes","passing","ဖြတ်သန်းသည်"],
+            ["paste","pasted","pasted","pastes","pasting","ကပ်သည်"],
+            ["pat","patted","patted","pats","patting","ပွတ်သပ်သည်"],
+            ["patch","patched","patched","patches","patching","ပြင်ဆင်သည်"],
+            ["pause","paused","paused","pauses","pausing","ရပ်နားသည်"],
+            ["pay","paid","paid","pays","paying","ပေးဆောင်သည်"],
+            ["peep","peeped","peeped","peeps","peeping","ဖွင့်ကြည့်သည်"],
+            ["perish","perished","perished","perishes","perishing","ပျက်စီးသည်"],
+            ["permit","permitted","permitted","permits","permitting","ခွင့်ပြုသည်"],
+            ["persuade","persuaded","persuaded","persuades","persuading","စည်းရုံးသိမ်းသွင်းသည်"],
+            ["phone","phoned","phoned","phones","phoning","ဖုန်းဆက်သည်"],
+            ["place","placed","placed","places","placing","နေရာချသည်"],
+            ["plan","planned","planned","plans","planning","အစီအစဉ်ဆွဲသည်"],
+            ["play","played","played","plays","playing","ကစားသည်"],
+            ["plead","pled","pled","pleads","pleading","တောင်းပန်သည်"],
+            ["please","pleased","pleased","pleases","pleasing","ကျေနပ်စေသည်"],
+            ["plod","plodded","plodded","plods","plodding","လမ်းလျှောက်သည်"],
+            ["plot","plotted","plotted","plots","plotting","ကြံစည်သည်"],
+            ["pluck","plucked","plucked","plucks","plucking","ဆွဲသည်"],
+            ["ply","plied","plied","plies","plying","သုံးသည်"],
+            ["point","pointed","pointed","points","pointing","ညွှန်သည်"],
+            ["polish","polished","polished","polishes","polishing","ပွတ်တိုက်သည်"],
+            ["pollute","polluted","polluted","pollutes","polluting","ညစ်ညမ်းစေသည်"],
+            ["ponder","pondered","pondered","ponders","pondering","ဆင်ခြင်သည်"],
+            ["pour","poured","poured","pours","pouring","သွန်းသည်"],
+            ["pout","pouted","pouted","pouts","pouting","မျက်နှာထားသည်"],
+            ["practise","practised","practised","practises","practising","ကျင့်သုံးသည်"],
+            ["praise","praised","praised","praises","praising","ချီးမွမ်းသည်"],
+            ["pray","prayed","prayed","prays","praying","ဆုတောင်းသည်"],
+            ["preach","preached","preached","preaches","preaching","ဟောသည်"],
+            ["prefer","preferred","preferred","prefers","preferring","ပိုနှစ်သက်သည်"],
+            ["prepare","prepared","prepared","prepares","preparing","ပြင်ဆင်သည်"],
+            ["prescribe","prescribed","prescribed","prescribes","prescribing","ညွှန်ကြားသည်"],
+            ["present","presented","presented","presents","presenting","တင်ပြသည်"],
+            ["preserve","preserved","preserved","preserves","preserving","ထိန်းသိမ်းသည်"],
+            ["preset","preset","preset","presets","presetting","ကြိုတင်သတ်မှတ်သည်"],
+            ["preside","presided","presided","presides","presiding","ဥက္ကဋ္ဌဖြစ်သည်"],
+            ["press","pressed","pressed","presses","pressing","ဖိသည်"],
+            ["pretend","pretended","pretended","pretends","pretending","ဟန်ဆောင်သည်"],
+            ["prevent","prevented","prevented","prevents","preventing","ကာကွယ်သည်"],
+            ["print","printed","printed","prints","printing","ပုံနှိပ်သည်"],
+            ["proceed","proceeded","proceeded","proceeds","proceeding","ဆက်လက်ဆောင်ရွက်သည်"],
+            ["produce","produced","produced","produces","producing","ထုတ်လုပ်သည်"],
+            ["progress","progressed","progressed","progresses","progressing","တိုးတက်သည်"],
+            ["prohibit","prohibited","prohibited","prohibits","prohibiting","တားမြစ်သည်"],
+            ["promise","promised","promised","promises","promising","ကတိပေးသည်"],
+            ["propose","proposed","proposed","proposes","proposing","အဆိုပြုသည်"],
+            ["prosecute","prosecuted","prosecuted","prosecutes","prosecuting","တရားစွဲသည်"],
+            ["protect","protected","protected","protects","protecting","ကာကွယ်သည်"],
+            ["prove","proved","proved","proves","proving","သက်သေပြသည်"],
+            ["provide","provided","provided","provides","providing","ထောက်ပံ့သည်"],
+            ["pull","pulled","pulled","pulls","pulling","ဆွဲသည်"],
+            ["punish","punished","punished","punishes","punishing","အပြစ်ပေးသည်"],
+            ["purify","purified","purified","purifies","purifying","သန့်စင်စေသည်"],
+            ["push","pushed","pushed","pushes","pushing","တွန်းသည်"],
+            ["put","put","put","puts","putting","ထားသည်"],
+            ["qualify","qualified","qualified","qualifies","qualifying","အရည်အချင်းပြည့်မီသည်"],
+            ["quarrel","quarrelled","quarrelled","quarrels","quarrelling","ငြင်းခုံသည်"],
+            ["question","questioned","questioned","questions","questioning","မေးမြန်းသည်"],
+            ["quit","quit","quit","quits","quitting","ထွက်သည်"],
+            ["race","raced","raced","races","racing","ပြိုင်သည်"],
+            ["rain","rained","rained","rains","raining","မိုးရွာသည်"],
+            ["rattle","rattled","rattled","rattles","rattling","တုန်ခါသည်"],
+            ["reach","reached","reached","reaches","reaching","ရောက်သည်"],
+            ["read","read","read","reads","reading","ဖတ်သည်"],
+            ["realize","realized","realized","realizes","realizing","သဘောပေါက်သည်"],
+            ["rebuild","rebuilt","rebuilt","rebuilds","rebuilding","ပြန်လည်ဆောက်သည်"],
+            ["recall","recalled","recalled","recalls","recalling","ပြန်အမှတ်ရသည်"],
+            ["recast","recast","recast","recalls","recasting","ပြန်လည်သွန်းသည်"],
+            ["receive","received","received","receives","receiving","လက်ခံရရှိသည်"],
+            ["recite","recited","recited","recites","reciting","ရွတ်သည်"],
+            ["recognize","recognized","recognized","recognizes","recognizing","အသိအမှတ်ပြုသည်"],
+            ["recollect","recollected","recollected","recollects","recollecting","ပြန်အမှတ်ရသည်"],
+            ["recur","recurred","recurred","recurs","recurring","ပြန်ဖြစ်သည်"],
+            ["redo","redid","redone","redoes","redoing","ပြန်လုပ်သည်"],
+            ["reduce","reduced","reduced","reduces","reducing","လျှော့ချသည်"],
+            ["refer","referred","referred","refers","referring","ရည်ညွှန်းသည်"],
+            ["reflect","reflected","reflected","reflects","reflecting","ရောင်ပြန်ဟပ်သည်"],
+            ["refuse","refused","refused","refuses","refusing","ငြင်းဆန်သည်"],
+            ["regard","regarded","regarded","regards","regarding","ရှုမြင်သည်"],
+            ["regret","regretted","regretted","regrets","regretting","နောင်တရသည်"],
+            ["relate","related","related","relates","relating","ဆက်စပ်သည်"],
+            ["relax","relaxed","relaxed","relaxes","relaxing","အနားယူသည်"],
+            ["rely","relied","relied","relies","relying","မှီခိုသည်"],
+            ["remain","remained","remained","remains","remaining","ကျန်ရှိသည်"],
+            ["remake","remade","remade","remakes","remaking","ပြန်လုပ်သည်"],
+            ["remove","removed","removed","removes","removing","ဖယ်ရှားသည်"],
+            ["rend","rent","rent","rends","rending","ဆုတ်သည်"],
+            ["renew","renewed","renewed","renews","renewing","သက်တမ်းတိုးသည်"],
+            ["renounce","renounced","renounced","renounces","renouncing","စွန့်လွှတ်သည်"],
+            ["repair","repaired","repaired","repairs","repairing","ပြင်ဆင်သည်"],
+            ["repeat","repeated","repeated","repeats","repeating","ပြန်လုပ်သည်"],
+            ["replace","replaced","replaced","replaces","replacing","အစားထိုးသည်"],
+            ["reply","replied","replied","replies","replying","ပြန်ဖြေသည်"],
+            ["report","reported","reported","reports","reporting","အစီရင်ခံသည်"],
+            ["request","requested","requested","requests","requesting","တောင်းဆိုသည်"],
+            ["resell","resold","resold","resells","reselling","ပြန်ရောင်းသည်"],
+            ["resemble","resembled","resembled","resembles","resembling","တူသည်"],
+            ["reset","reset","reset","resets","resetting","ပြန်သတ်မှတ်သည်"],
+            ["resist","resisted","resisted","resists","resisting","ခုခံသည်"],
+            ["resolve","resolved","resolved","resolves","resolving","ဖြေရှင်းသည်"],
+            ["respect","respects","respected","respects","respecting","လေးစားသည်"],
+            ["rest","rested","rested","rests","resting","အနားယူသည်"],
+            ["restrain","restrained","restrained","restrains","restraining","ချုပ်တည်းသည်"],
+            ["retain","retained","retained","retains","retaining","ဆက်လက်ထိန်းသိမ်းသည်"],
+            ["retch","retched","retched","retches","retching","အန်သည်"],
+            ["retire","retired","retired","retires","retiring","အနားယူသည်"],
+            ["return","returned","returned","returns","returning","ပြန်လာသည်"],
+            ["reuse","reused","reused","reuses","reusing","ပြန်သုံးသည်"],
+            ["review","reviewed","reviewed","reviews","reviewing","ပြန်လည်သုံးသပ်သည်"],
+            ["rewind","rewound","rewound","rewinds","rewinding","ပြန်လှည့်သည်"],
+            ["rid","rid","rid","rids","ridding","ရှင်းလင်းသည်"],
+            ["ride","rode","ridden","rides","riding","စီးသည်"],
+            ["ring","rang","rung","rings","ringing","မြည်သည်"],
+            ["rise","rose","risen","rises","rising","ထသည်"],
+            ["roar","roared","roared","roars","roaring","ဟောက်သည်"],
+            ["rob","robbed","robbed","robs","robbing","လုယက်သည်"],
+            ["roll","rolled","rolled","rolls","rolling","လှိမ့်သည်"],
+            ["rot","rotted","rotted","rots","rotting","ဆွေးသည်"],
+            ["rub","rubbed","rubbed","rubs","rubbing","ပွတ်သည်"],
+            ["rule","ruled","ruled","rules","ruling","အုပ်စိုးသည်"],
+            ["run","ran","run","runs","running","ပြေးသည်"],
+            ["rush","rushed","rushed","rushes","rushing","အလျင်စလိုသွားသည်"],
+            ["sabotage","sabotaged","sabotaged","sabotages","sabotaging","ဖျက်ဆီးသည်"],
+            ["sack","sacked","sacked","sacks","sacking","အိတ်ထဲထည့်သည်"],
+            ["sacrifice","sacrificed","sacrificed","sacrifices","sacrificing","စတေးသည်"],
+            ["sadden","saddened","saddened","saddens","saddening","ဝမ်းနည်းစေသည်"],
+            ["saddle","saddled","saddled","saddles","saddling","ကုန်းနှီးတပ်သည်"],
+            ["sag","sagged","sagged","sags","sagging","ညွှတ်သည်"],
+            ["sail","sailed","sailed","sails","sailing","ရွက်လွှင့်သည်"],
+            ["sally","sallied","sallied","sallies","sallying","ထွက်သည်"],
+            ["salute","saluted","saluted","salutes","saluting","ဂါရဝပြုသည်"],
+            ["salvage","salvaged","salvaged","salvages","salvaging","ကယ်တင်သည်"],
+            ["salve","salved","salved","salves","salving","ဆေးလိမ်းသည်"],
+            ["sample","sampled","sampled","samples","sampling","နမူနာယူသည်"],
+            ["sanctify","sanctified","sanctified","sanctifies","sanctifying","သန့်ရှင်းစေသည်"],
+            ["sanction","sanctioned","sanctioned","sanctions","sanctioning","ခွင့်ပြုချက်ပေးသည်"],
+            ["sap","sapped","sapped","saps","sapping","အားလျော့စေသည်"],
+            ["saponify","saponified","saponified","saponifies","saponifying","ဆပ်ပြာဖြစ်စေသည်"],
+            ["sash","sashed","sashed","sashes","sashing","ခါးပတ်ပတ်သည်"],
+            ["sashay","sashayed","sashayed","sashays","sashaying","လှည့်လည်သည်"],
+            ["sass","sassed","sassed","sasses","sassing","စော်ကားပြောသည်"],
+            ["sate","sated","sated","sates","sating","ကျေနပ်စေသည်"],
+            ["satiate","satiated","satiated","satiates","satiating","ပြည့်ဝစေသည်"],
+            ["satirise","satirised","satirised","satirises","satirising","သရော်သည်"],
+            ["satisfy","satisfied","satisfied","satisfies","satisfying","ကျေနပ်စေသည်"],
+            ["saturate","saturated","saturated","saturates","saturating","ပြည့်နှက်စေသည်"],
+            ["saunter","sauntered","sauntered","saunters","sauntering","လမ်းလျှောက်သည်"],
+            ["save","saved","saved","saves","saving","ကယ်တင်သည်"],
+            ["savor","savored","savored","savors","savoring","အရသာခံစားသည်"],
+            ["savvy","savvied","savvied","savvies","savvying","နားလည်သည်"],
+            ["saw","sawed","sawed","saws","sawing","လွှသည်"],
+            ["say","said","said","says","saying","ပြောသည်"],
+            ["scab","scabbed","scabbed","scabs","scabbing","အနာဖေးဖြစ်သည်"],
+            ["scabble","scabbled","scabbled","scabbles","scabbling","ကြမ်းတမ်းစွာလုပ်သည်"],
+            ["scald","scalded","scalded","scalds","scalding","လောင်သည်"],
+            ["scale","scaled","scaled","scales","scaling","အတိုင်းအတာချသည်"],
+            ["scam","scammed","scammed","scams","scamming","လိမ်လည်သည်"],
+            ["scan","scanned","scanned","scans","scanning","စကင်ဖတ်သည်"],
+            ["scant","scanted","scanted","scants","scanting","နည်းသည်"],
+            ["scar","scarred","scarred","scars","scarring","အမာရွတ်ဖြစ်သည်"],
+            ["scare","scared","scared","scares","scaring","ကြောက်စေသည်"],
+            ["scarify","scarified","scarified","scarifies","scarifying","ခြစ်သည်"],
+            ["scarp","scarped","scarped","scarps","scarping","ဖြတ်တောက်သည်"],
+            ["scat","scatted","scatted","scats","scatting","ပြေးသည်"],
+            ["scatter","scattered","scattered","scatters","scattering","ဖြန့်ကျဲသည်"],
+            ["scold","scolded","scolded","scolds","scolding","ဆူပူသည်"],
+            ["scorch","scorched","scorched","scorches","scorching","လောင်ကျွမ်းသည်"],
+            ["scowl","scowled","scowled","scowls","scowling","မျက်နှာထားကြမ်းသည်"],
+            ["scrawl","scrawled","scrawled","scrawls","scrawling","ရေးခြစ်သည်"],
+            ["scream","screamed","screamed","screams","screaming","အော်သည်"],
+            ["screw","screwed","screwed","screws","screwing","ဝက်အူလှည့်သည်"],
+            ["scrub","scrubbed","scrubbed","scrubs","scrubbing","ပွတ်တိုက်သည်"],
+            ["search","searched","searched","searches","searching","ရှာဖွေသည်"],
+            ["seat","seated","seated","seats","seating","ထိုင်ခုံပေးသည်"],
+            ["secure","secured","secured","secures","securing","လုံခြုံစေသည်"],
+            ["see","saw","seen","sees","seeing","မြင်သည်"],
+            ["seek","sought","sought","seeks","seeking","ရှာသည်"],
+            ["seem","seemed","seemed","seems","seeming","ထင်ရသည်"],
+            ["seize","seized","seized","seizes","seizing","သိမ်းဆည်းသည်"],
+            ["select","selected","selected","selects","selecting","ရွေးချယ်သည်"],
+            ["sell","sold","sold","sells","selling","ရောင်းသည်"],
+            ["send","sent","sent","sends","sending","ပို့သည်"],
+            ["sentence","sentenced","sentenced","sentences","sentencing","စီရင်ချက်ချသည်"],
+            ["separate","separated","separated","separates","separating","ခွဲခြားသည်"],
+            ["set","set","set","sets","setting","သတ်မှတ်သည်"],
+            ["sever","severed","severed","severs","severing","ဖြတ်တောက်သည်"],
+            ["sew","sewed","sewn","sews","sewing","ချုပ်သည်"],
+            ["shake","shook","shaken","shakes","shaking","လှုပ်သည်"],
+            ["shape","shaped","shaped","shapes","shaping","ပုံဖော်သည်"],
+            ["share","shared","shared","shares","sharing","မျှဝေသည်"],
+            ["shatter","shattered","shattered","shatters","shattering","အစိတ်စိတ်ကွဲသည်"],
+            ["shave","shove","shaven","shaves","shaving","မုတ်ဆိတ်ရိတ်သည်"],
+            ["shear","shore","shorn","shears","shearing","ညှပ်သည်"],
+            ["shed","shed","shed","sheds","shedding","ကြွေသည်"],
+            ["shine","shone","shone","shines","shining","တောက်ပသည်"],
+            ["shirk","shirked","shirked","shirks","shirking","ရှောင်သည်"],
+            ["shit","shit","shit","shits","shitting","မစင်စွန့်သည်"],
+            ["shiver","shivered","shivered","shivers","shivering","တုန်သည်"],
+            ["shock","shocked","shocked","shocks","shocking","ထိတ်လန့်စေသည်"],
+            ["shoe","shod","shod","shoes","shoeing","ဖိနပ်စီးသည်"],
+            ["shoot","shot","shot","shoots","shooting","ပစ်သည်"],
+            ["shorten","shortened","shortened","shortens","shortening","တိုစေသည်"],
+            ["shout","shouted","shouted","shouts","shouting","အော်သည်"],
+            ["show","showed","shown","shows","showing","ပြသသည်"],
+            ["shrink","shrank","shrunk","shrinks","shrinking","ကျုံ့သည်"],
+            ["shun","shunned","shunned","shuns","shunning","ရှောင်သည်"],
+            ["shut","shut","shut","shuts","shutting","ပိတ်သည်"],
+            ["sight","sighted","sighted","sights","sighting","တွေ့သည်"],
+            ["signal","signalled","signalled","signals","signalling","အချက်ပြသည်"],
+            ["signify","signified","signified","signifies","signifying","ဆိုလိုသည်"],
+            ["sing","sang","sung","sings","singing","သီချင်းဆိုသည်"],
+            ["sink","sank","sunk","sinks","sinking","နစ်သည်"],
+            ["sip","sipped","sipped","sips","sipping","သောက်သည်"],
+            ["sit","sat","sat","sits","sitting","ထိုင်သည်"],
+            ["ski","skied","skied","skis","skiing","နှင်းလျှောစီးသည်"],
+            ["skid","skidded","skidded","skids","skidding","ချော်သည်"],
+            ["slam","slammed","slammed","slams","slamming","ပိတ်သည်"],
+            ["slay","slew","slain","slays","slaying","သတ်သည်"],
+            ["sleep","slept","slept","sleeps","sleeping","အိပ်သည်"],
+            ["slide","slid","slid","slides","sliding","ချော်သည်"],
+            ["slim","slimmed","slimmed","slims","slimming","ပိန်သည်"],
+            ["sling","slung","slung","slings","slinging","ပစ်ချသည်"],
+            ["slink","slunk","slunk","slinks","slinking","ခိုးသွားသည်"],
+            ["slip","slipped","slipped","slips","slipping","ချော်လဲသည်"],
+            ["slit","slit","slit","slits","slitting","ခွဲသည်"],
+            ["smash","smashed","smashed","smashes","smashing","ရိုက်ချိုးသည်"],
+            ["smell","smelt","smelt","smells","smelling","အနံ့ခံသည်"],
+            ["smile","smiled","smiled","smiles","smiling","ပြုံးသည်"],
+            ["smite","smote","smitten","smites","smiting","ရိုက်သည်"],
+            ["smooth","smoothed","smoothed","smoothes","smoothing","ချောမွေ့စေသည်"],
+            ["smother","smothered","smothered","smothers","smothering","လွှမ်းမိုးသည်"],
+            ["snap","snapped","snapped","snaps","snapping","ချိုးသည်"],
+            ["snatch","snatched","snatched","snatches","snatching","လုယူသည်"],
+            ["sneak","sneaked","sneaked","sneaks","sneaking","ခိုးဝင်သည်"],
+            ["sneeze","sneezed","sneezed","sneezes","sneezing","နှာချေသည်"],
+            ["sniff","sniffed","sniffed","sniffs","sniffing","နှာခေါင်းရှူသည်"],
+            ["soar","soared","soared","soars","soaring","ပျံတက်သည်"],
+            ["sob","sobbed","sobbed","sobs","sobbing","ငိုကြွေးသည်"],
+            ["solicit","solicited","solicited","solicits","soliciting","တောင်းဆိုသည်"],
+            ["solve","solved","solved","solves","solving","ဖြေရှင်းသည်"],
+            ["soothe","soothed","soothed","soothes","soothing","သက်သာစေသည်"],
+            ["sort","sorted","sorted","sorts","sorting","စီရန်သည်"],
+            ["sow","sowed","sowed","sows","sowing","မျိုးစေ့ချသည်"],
+            ["sparkle","sparkled","sparkled","sparkles","sparkling","တောက်ပသည်"],
+            ["speak","spoke","spoken","speaks","speaking","စကားပြောသည်"],
+            ["speed","sped","sped","speeds","speeding","အရှိန်မြှင့်သည်"],
+            ["spell","spelt","spelt","spells","spelling","စာလုံးပေါင်းသည်"],
+            ["spend","spent","spent","spends","spending","သုံးစွဲသည်"],
+            ["spill","spilt","spilt","spills","spilling","ဖိတ်သည်"],
+            ["spin","span/spun","spun","spins","spinning","လည်သည်"],
+            ["spit","spat/spit","spat/spit","spits","spitting","တံတွေးထွေးသည်"],
+            ["split","split","split","splits","splitting","ခွဲသည်"],
+            ["spoil","spoilt","spoilt","spoils","spoiling","ပျက်စီးစေသည်"],
+            ["spray","sprayed","sprayed","sprays","spraying","ဖြန်းသည်"],
+            ["spread","spread","spread","spreads","spreading","ဖြန့်သည်"],
+            ["spring","sprang","sprung","springs","springing","ပေါက်သည်"],
+            ["sprout","sprouted","sprouted","sprouts","sprouting","အညှောက်ထွက်သည်"],
+            ["squeeze","squeezed","squeezed","squeezes","squeezing","ညှစ်သည်"],
+            ["stand","stood","stood","stands","standing","ရပ်သည်"],
+            ["stare","stared","stared","stares","staring","စိုက်ကြည့်သည်"],
+            ["start","started","started","starts","starting","စတင်သည်"],
+            ["state","stated","stated","states","stating","ဖော်ပြသည်"],
+            ["stay","stayed","stayed","stays","staying","နေသည်"],
+            ["steal","stole","stolen","steals","stealing","ခိုးသည်"],
+            ["steep","steeped","steeped","steeps","steeping","စိမ်သည်"],
+            ["stem","stemmed","stemmed","stems","stemming","ပင်စည်ဖြစ်သည်"],
+            ["step","stepped","stepped","steps","stepping","ခြေလှမ်းလှမ်းသည်"],
+            ["sterilize","sterilized","sterilized","sterilizes","sterilizing","ပိုးသတ်သည်"],
+            ["stick","stuck","stuck","sticks","sticking","စိုက်သည်"],
+            ["stimulate","stimulated","stimulated","stimulates","stimulating","လှုံ့ဆော်သည်"],
+            ["sting","stung","stung","stings","stinging","ထိုးသည်"],
+            ["stink","stank","stunk","stinks","stinking","အနံ့ဆိုးထွက်သည်"],
+            ["stir","stirred","stirred","stirs","stirring","နှိုးဆော်သည်"],
+            ["stitch","stitched","stitched","stitches","stitching","ချုပ်သည်"],
+            ["stoop","stooped","stooped","stoops","stooping","ကိုင်းသည်"],
+            ["stop","stopped","stopped","stops","stopping","ရပ်သည်"],
+            ["store","stored","stored","stores","storing","သိုလှောင်သည်"],
+            ["strain","strained","strained","strains","straining","ဖိစီးသည်"],
+            ["stray","strayed","strayed","strays","straying","လမ်းလွဲသည်"],
+            ["stress","stressed","stressed","stresses","stressing","ဖိအားပေးသည်"],
+            ["stretch","stretched","stretched","stretches","stretching","ဆန့်သည်"],
+            ["strew","strewed","strewn","strews","strewing","ဖြန့်သည်"],
+            ["stride","strode","stridden","strides","striding","ခြေလှမ်းကြီးလှမ်းသည်"],
+            ["strike","struck","struck/stricken","strikes","striking","ရိုက်သည်"],
+            ["string","strung","strung","strings","stringing","ကြိုးဆွဲသည်"],
+            ["strive","strove","striven","strives","striving","ကြိုးစားသည်"],
+            ["study","studied","studied","studies","studying","လေ့လာသည်"],
+            ["submit","submitted","submitted","submits","submitting","တင်ပြသည်"],
+            ["subscribe","subscribed","subscribed","subscribes","subscribing","စာရင်းသွင်းသည်"],
+            ["subtract","subtracted","subtracted","subtracts","subtracting","နုတ်သည်"],
+            ["succeed","succeeded","succeeded","succeeds","succeeding","အောင်မြင်သည်"],
+            ["suck","sucked","sucked","sucks","sucking","စုပ်သည်"],
+            ["suffer","suffered","suffered","suffers","suffering","ခံစားရသည်"],
+            ["suggest","suggested","suggested","suggests","suggesting","အကြံပြုသည်"],
+            ["summon","summoned","summoned","summons","summoning","ခေါ်ယူသည်"],
+            ["supply","supplied","supplied","supplies","supplying","ထောက်ပံ့သည်"],
+            ["support","supported","supported","supports","supporting","ထောက်ခံသည်"],
+            ["suppose","supposed","supposed","supposes","supposing","ယူဆသည်"],
+            ["surge","surged","surged","surges","surging","ရုတ်တရက်တိုးလာသည်"],
+            ["surmise","surmised","surmised","surmises","surmising","ခန့်မှန်းသည်"],
+            ["surpass","surpassed","surpassed","surpasses","surpassing","သာလွန်သည်"],
+            ["surround","surrounded","surrounded","surrounds","surrounding","ဝန်းရံသည်"],
+            ["survey","surveyed","surveyed","surveys","surveying","စစ်တမ်းကောက်သည်"],
+            ["survive","survived","survived","survives","surviving","ရှင်သန်သည်"],
+            ["swallow","swallowed","swallowed","swallows","swallowing","မျိုသည်"],
+            ["sway","swayed","swayed","sways","swaying","လွှဲသည်"],
+            ["swear","swore","sworn","swears","swearing","ကျိန်ဆိုသည်"],
+            ["sweat","sweat","sweat","sweats","sweating","ချွေးထွက်သည်"],
+            ["sweep","swept","swept","sweeps","sweeping","တိုက်သည်"],
+            ["swell","swelled","swollen","swells","swelling","ရောင်ရမ်းသည်"],
+            ["swim","swam","swum","swims","swimming","ရေကူးသည်"],
+            ["swing","swung","swung","swings","swinging","လွှဲသည်"],
+            ["swot","swotted","swotted","swots","swotting","ကြိုးစားသည်"],
+            ["take","took","taken","takes","taking","ယူသည်"],
+            ["talk","talked","talked","talks","talking","စကားပြောသည်"],
+            ["tap","tapped","tapped","taps","tapping","ပုတ်သည်"],
+            ["taste","tasted","tasted","tastes","tasting","အရသာခံသည်"],
+            ["tax","taxed","taxed","taxes","taxing","အခွန်ကောက်သည်"],
+            ["teach","taught","taught","teaches","teaching","သင်ကြားသည်"],
+            ["tear","tore","torn","tears","tearing","ဆုတ်သည်"],
+            ["tee","teed","teed","tees","teeing","ဂေါက်သီးရိုက်သည်"],
+            ["tell","told","told","tells","telling","ပြောသည်"],
+            ["tempt","tempted","tempted","tempts","tempting","သွေးဆောင်သည်"],
+            ["tend","tended","tended","tends","tending","သဘောရှိသည်"],
+            ["terminate","terminated","terminated","terminates","terminating","အဆုံးသတ်သည်"],
+            ["terrify","terrified","terrified","terrifies","terrifying","ထိတ်လန့်စေသည်"],
+            ["test","tested","tested","tests","testing","စမ်းသပ်သည်"],
+            ["thank","thanked","thanked","thanks","thanking","ကျေးဇူးတင်သည်"],
+            ["think","thought","thought","thinks","thinking","စဉ်းစားသည်"],
+            ["thrive","throve","throven","thrives","thriving","ရှင်သန်သည်"],
+            ["throw","threw","thrown","throws","throwing","ပစ်သည်"],
+            ["thrust","thrust","thrust","thrusts","thrusting","ထိုးသည်"],
+            ["thumb","thumbed","thumbed","thumbs","thumbing","လက်မဖြင့်ကိုင်သည်"],
+            ["tie","tied","tied","ties","tying","ချည်သည်"],
+            ["tire","tired","tired","tires","tiring","ပင်ပန်းစေသည်"],
+            ["toss","tossed","tossed","tosses","tossing","ပစ်ချသည်"],
+            ["touch","touched","touched","touches","touching","ထိသည်"],
+            ["train","trained","trained","trains","training","လေ့ကျင့်သည်"],
+            ["trample","trampled","trampled","tramples","trampling","နင်းသည်"],
+            ["transfer","transferred","transferred","transfers","transferring","လွှဲပြောင်းသည်"],
+            ["transform","transformed","transformed","transforms","transforming","ပြောင်းလဲသည်"],
+            ["translate","translated","translated","translates","translating","ဘာသာပြန်သည်"],
+            ["trap","trapped","trapped","traps","trapping","ထောင်ချောက်ဆင်သည်"],
+            ["travel","travelled","travelled","travels","travelling","ခရီးသွားသည်"],
+            ["tread","trod","trodden","treads","treading","နင်းသည်"],
+            ["treasure","treasured","treasured","treasures","treasuring","တန်ဖိုးထားသည်"],
+            ["treat","treated","treated","treats","treating","ဆက်ဆံသည်"],
+            ["tree","treed","treed","trees","treeing","သစ်ပင်စိုက်သည်"],
+            ["tremble","trembled","trembled","trembles","trembling","တုန်သည်"],
+            ["triumph","triumphed","triumphed","triumphs","triumphing","အောင်ပွဲခံသည်"],
+            ["trust","trusted","trusted","trusts","trusting","ယုံကြည်သည်"],
+            ["try","tried","tried","tries","trying","ကြိုးစားသည်"],
+            ["turn","turned","turned","turns","turning","လှည့်သည်"],
+            ["type","typed","typed","types","typing","ရိုက်သည်"],
+            ["typeset","typeset","typeset","typesets","typesetting","စာလုံးပုံဖော်သည်"],
+            ["understand","understood","understood","understands","understanding","နားလည်သည်"],
+            ["undo","undid","undone","undoes","undoing","ပြန်ဖျက်သည်"],
+            ["uproot","uprooted","uprooted","uproots","uprooting","နုတ်ပစ်သည်"],
+            ["upset","upset","upset","upsets","upsetting","စိတ်ဆိုးစေသည်"],
+            ["urge","urged","urged","urges","urging","တိုက်တွန်းသည်"],
+            ["use","used","used","uses","using","သုံးသည်"],
+            ["utter","uttered","uttered","utters","uttering","ပြောဆိုသည်"],
+            ["value","valued","valued","values","valuing","တန်ဖိုးထားသည်"],
+            ["vanish","vanished","vanished","vanishes","vanishing","ပျောက်ကွယ်သည်"],
+            ["vary","varied","varied","varies","varying","ကွဲပြားသည်"],
+            ["verify","verified","verified","verifies","verifying","စစ်ဆေးအတည်ပြုသည်"],
+            ["vex","vexed","vexed","vexes","vexing","စိတ်ဆိုးစေသည်"],
+            ["vie","vied","vied","vies","vying","ယှဉ်ပြိုင်သည်"],
+            ["view","viewed","viewed","views","viewing","ကြည့်ရှုသည်"],
+            ["violate","violated","violated","violates","violating","ချိုးဖောက်သည်"],
+            ["vomit","vomited","vomited","vomits","vomiting","အန်သည်"],
+            ["wake","woke","woken","wakes","waking","နိုးသည်"],
+            ["walk","walked","walked","walks","walking","လမ်းလျှောက်သည်"],
+            ["wander","wandered","wandered","wanders","wandering","လှည့်လည်သည်"],
+            ["want","wanted","wanted","wants","wanting","အလိုရှိသည်"],
+            ["warn","warned","warned","warns","warning","သတိပေးသည်"],
+            ["waste","wasted","wasted","wastes","wasting","ဖြုန်းတီးသည်"],
+            ["watch","watched","watched","watches","watching","ကြည့်သည်"],
+            ["water","watered","watered","waters","watering","ရေလောင်းသည်"],
+            ["wave","waved","waved","waves","waving","လှိုင်းထသည်"],
+            ["wax","waxed","waxed","waxes","waxing","ဖယောင်းလိမ်းသည်"],
+            ["waylay","waylaid","waylaid","waylays","waylaying","ကြားဖြတ်တိုက်သည်"],
+            ["wear","wore","worn","wears","wearing","ဝတ်ဆင်သည်"],
+            ["weave","wove","woven","weaves","weaving","ရက်သည်"],
+            ["wed","wed","wed","weds","wedding","လက်ထပ်သည်"],
+            ["weep","wept","wept","weeps","weeping","ငိုသည်"],
+            ["weigh","weighed","weighed","weighs","weighing","ချိန်သည်"],
+            ["welcome","welcomed","welcomed","welcomes","welcoming","ကြိုဆိုသည်"],
+            ["wend","went","went","wends","wending","သွားသည်"],
+            ["wet","wet","wet","wets","wetting","စိုစွတ်စေသည်"],
+            ["whip","whipped","whipped","whips","whipping","ရိုက်သည်"],
+            ["whisper","whispered","whispered","whispers","whispering","တီးတိုးပြောသည်"],
+            ["win","won","won","wins","winning","အနိုင်ရသည်"],
+            ["wind","wound","wound","winds","winding","လေတိုက်သည်"],
+            ["wish","wished","wished","wishes","wishing","ဆန္ဒပြုသည်"],
+            ["withdraw","withdrew","withdrawn","withdraws","withdrawing","ဆုတ်ခွာသည်"],
+            ["work","worked","worked","works","working","အလုပ်လုပ်သည်"],
+            ["worry","worried","worried","worries","worrying","စိုးရိမ်သည်"],
+            ["worship","worshipped","worshipped","worships","worshipping","ကိုးကွယ်သည်"],
+            ["wring","wrung","wrung","wrings","wringing","ညှစ်သည်"],
+            ["write","wrote","written","writes","writing","ရေးသည်"],
+            ["yawn","yawned","yawned","yawns","yawning","အိပ်ငိုက်သည်"],
+            ["yell","yelled","yelled","yells","yelling","အော်သည်"],
+            ["yield","yielded","yielded","yields","yielding","ထွက်သည်"],
+            ["zinc","zinked","zinked","zincs","zincing","သွပ်ရည်စိမ်သည်"],
+            ["zoom","zoomed","zoomed","zooms","zooming","ဇွန်းတိုးသည်"]
+        ];
+
+        // ═══════════════════════════════════════════════════════════════
+        //  TENSES DATA
+        // ═══════════════════════════════════════════════════════════════
+
+        const tenses = [
+            { id: 1, name: "Simple Present", mm: "ရိုးရိုး ပစ္စုပ္ပန်", formula: "Subject + V1 / V1 + s/es", usage: "နေ့စဉ်လုပ်နေကျ အလေ့အထ (Habits)၊ ယေဘုယျအမှန်တရား (General truths) တွေအတွက် သုံးပါတယ်။", ex: "I write books.", exMM: "ကျွန်တော် စာအုပ်တွေ ရေးပါတယ်။" },
+            { id: 2, name: "Present Continuous", mm: "ပစ္စုပ္ပန် ဆက်လက်ဖြစ်ပေါ်နေသော", formula: "Subject + am/is/are + V-ing", usage: "ယခုအချိန်မှာ ဖြစ်ပေါ်နေဆဲ (Happening now) ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I am writing a book.", exMM: "ကျွန်တော် စာအုပ်တစ်အုပ် ရေးနေပါတယ်။" },
+            { id: 3, name: "Present Perfect", mm: "ပစ္စုပ္ပန် ပြီးစီးခြင်း", formula: "Subject + has/have + V3", usage: "အတိတ်မှာ စခဲ့ပြီး ယခုအချိန်အထိ သက်ရောက်မှုရှိနေတဲ့ ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I have written a book.", exMM: "ကျွန်တော် စာအုပ်တစ်အုပ် ရေးပြီးပါပြီ။" },
+            { id: 4, name: "Present Perfect Continuous", mm: "ပစ္စုပ္ပန် ပြီးစီးခြင်း ဆက်လက်ဖြစ်ပေါ်နေသော", formula: "Subject + has/have + been + V-ing", usage: "အတိတ်မှာ စခဲ့ပြီး ယခုအချိန်အထိ ဆက်လက်လုပ်ဆောင်နေဆဲ ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I have been writing for two hours.", exMM: "ကျွန်တော် နှစ်နာရီကြာအောင် ရေးနေခဲ့တာပါ။" },
+            { id: 5, name: "Simple Past", mm: "ရိုးရိုး အတိတ်", formula: "Subject + V2", usage: "အတိတ်ကာလတစ်ချိန်ချိန်မှာ ဖြစ်ပျက်ခဲ့ပြီး အခုအချိန်မှာ မရှိတော့တဲ့ ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I wrote a book yesterday.", exMM: "မနေ့က ကျွန်တော် စာအုပ်တစ်အုပ် ရေးခဲ့တယ်။" },
+            { id: 6, name: "Past Continuous", mm: "အတိတ် ဆက်လက်ဖြစ်ပေါ်နေသော", formula: "Subject + was/were + V-ing", usage: "အတိတ်ကာလ တစ်ချိန်ချိန်မှာ ဖြစ်ပေါ်နေခဲ့တဲ့ ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I was writing a book.", exMM: "ကျွန်တော် စာအုပ်တစ်အုပ် ရေးနေခဲ့တယ်။" },
+            { id: 7, name: "Past Perfect", mm: "အတိတ် ပြီးစီးခြင်း", formula: "Subject + had + V3", usage: "အတိတ်ကာလမှာ ဖြစ်ပျက်ခဲ့တဲ့ အဖြစ်အပျက်တစ်ခု မတိုင်ခင်မှာ အရင်ဆုံး ပြီးစီးသွားခဲ့တဲ့ ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I had written a book.", exMM: "ကျွန်တော် စာအုပ်တစ်အုပ် ရေးပြီးခဲ့ပြီ။" },
+            { id: 8, name: "Past Perfect Continuous", mm: "အတိတ် ပြီးစီးခြင်း ဆက်လက်ဖြစ်ပေါ်နေသော", formula: "Subject + had been + V-ing", usage: "အတိတ်ကာလက အဖြစ်အပျက်တစ်ခု မတိုင်ခင်အထိ ဆက်လက်လုပ်ဆောင်နေခဲ့တဲ့ ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I had been writing for two hours.", exMM: "ကျွန်တော် နှစ်နာရီကြာအောင် ရေးနေခဲ့တာပါ။" },
+            { id: 9, name: "Simple Future", mm: "ရိုးရိုး အနာဂတ်", formula: "Subject + will + V1", usage: "အနာဂတ်မှာ ဖြစ်လာမယ့် ကိစ္စတွေ၊ ဆုံးဖြတ်ချက်တွေအတွက် သုံးပါတယ်။", ex: "I will write a book.", exMM: "ကျွန်တော် စာအုပ်တစ်အုပ် ရေးပါမယ်။" },
+            { id: 10, name: "Future Continuous", mm: "အနာဂတ် ဆက်လက်ဖြစ်ပေါ်နေသော", formula: "Subject + will be + V-ing", usage: "အနာဂတ်ကာလ တစ်ချိန်ချိန်မှာ ဖြစ်ပေါ်နေလိမ့်မယ့် ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I will be writing a book.", exMM: "ကျွန်တော် စာအုပ်တစ်အုပ် ရေးနေပါလိမ့်မယ်။" },
+            { id: 11, name: "Future Perfect", mm: "အနာဂတ် ပြီးစီးခြင်း", formula: "Subject + will have + V3", usage: "အနာဂတ်ကာလ သတ်မှတ်ထားတဲ့အချိန် ရောက်တဲ့အခါ ပြီးစီးနေလိမ့်မယ့် ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I will have written a book by Monday.", exMM: "တနင်္လာနေ့အရောက်မှာ ကျွန်တော် စာအုပ်တစ်အုပ် ရေးပြီးနေပါလိမ့်မယ်။" },
+            { id: 12, name: "Future Perfect Continuous", mm: "အနာဂတ် ပြီးစီးခြင်း ဆက်လက်ဖြစ်ပေါ်နေသော", formula: "Subject + will have been + V-ing", usage: "အနာဂတ်ကာလ တစ်ချိန်ချိန်အထိ ဆက်လက်လုပ်ဆောင်နေလိမ့်မယ့် ကိစ္စတွေအတွက် သုံးပါတယ်။", ex: "I will have been writing for two hours.", exMM: "ကျွန်တော် နှစ်နာရီကြာအောင် ရေးနေပါလိမ့်မယ်။" }
+        ];
+
+        const mixedData = [
+            ["ငါတို့ ဘောလုံး ကစားနေကြတယ်။", "Present Continuous", "We are playing football."],
+            ["သူမ မနက်ဖြန် အနားယူလိမ့်မယ်။", "Simple Future", "She will rest tomorrow."],
+            ["ငါ စာအုပ် ဖတ်နေတယ်။", "Present Continuous", "I am reading a book."],
+            ["သူတို့ မလာမီ ငါတို့ ပြင်ဆင်ပြီးခဲ့ကြပြီ။", "Past Perfect", "We had prepared before they came."],
+            ["ငါ မနေ့က ဒီအချိန်မှာ စာ ရေးနေခဲ့တယ်။", "Past Continuous", "I was writing at this time yesterday."],
+            ["ငါ အသီး ဝယ်တယ်။", "Simple Present", "I buy fruit."],
+            ["ငါ မနေ့က ဒီအချိန်မှာ စာ လေ့လာနေခဲ့တယ်။", "Past Continuous", "I was studying at this time yesterday."],
+            ["သူတို့ ဘောလုံး ကစားကြလိမ့်မယ်။", "Simple Future", "They will play football."],
+            ["အမေ ဟင်း ချက်တယ်။", "Simple Present", "Mother cooks curry."],
+            ["သူတို့ ရုပ်ရှင် ကြည့်ကြတယ်။", "Simple Present", "They watch a movie."],
+            ["သူတို့ ခရီး သွားနေကြလိမ့်မယ်။", "Future Continuous", "They will be traveling."],
+            ["သူတို့ စကားပြောလာခဲ့ကြတာ ကြာပြီ။", "Present Perfect Continuous", "They have been talking for a long time."],
+            ["သူ တံခါး ပိတ်ခဲ့တယ်။", "Simple Past", "He closed the door."],
+            ["သူတို့ အိမ်သို့ ပြန်လာကြလိမ့်မယ်။", "Simple Future", "They will come back home."],
+            ["သူမ စာအုပ် ဝယ်နေခဲ့တယ်။", "Past Continuous", "She was buying a book."],
+            ["သူမ မနက်ဖြန် ရေကူးလိမ့်မယ်။", "Simple Future", "She will swim tomorrow."],
+            ["မနက်ဖြန် ညနေမှာ ငါ စာအုပ် ဖတ်နေခဲ့တာ ၂ နာရီ ရှိပြီးသား ဖြစ်လိမ့်မယ်။", "Future Perfect Continuous", "Tomorrow evening, I will have been reading a book for two hours."],
+            ["သူတို့ လာခဲ့တာ ၁ နာရီ ရှိပြီ။", "Present Perfect Continuous", "They have been coming for an hour."],
+            ["သူ အပြင် သွားနေတယ်။", "Present Continuous", "He is going out."],
+            ["ညီမလေး အိပ်ပျော်သွားပြီ။", "Present Perfect", "Little sister has fallen asleep."],
+            ["မနက်ဖြန် ငါတို့ စာမေးပွဲ ဖြေကြမယ်။", "Simple Future", "We will take the exam tomorrow."],
+            ["သူ အလုပ် သွားပြီးသား ဖြစ်လိမ့်မယ်။", "Future Perfect", "He will have gone to work."],
+            ["သူမ ရေ သောက်ပြီးပြီ။", "Present Perfect", "She has drunk water."],
+            ["ငါတို့ ရုပ်ရှင် ကြည့်နေကြတယ်။", "Present Continuous", "We are watching a movie."],
+            ["ငါတို့ ဈေး သွားနေကြတယ်။", "Present Continuous", "We are going to the market."],
+            ["သူတို့ ရေချိုးပြီးကြပြီ။", "Present Perfect", "They have taken a shower."],
+            ["ငါ မနက်ဖြန် အလုပ် သွားမယ်။", "Simple Future", "I will go to work tomorrow."],
+            ["သူတို့ မနက်ကတည်းက ရေကူးနေခဲ့ကြတာ။", "Past Perfect Continuous", "They had been swimming since morning."],
+            ["သူမ မလာမီ ငါ ထမင်း စားပြီးခဲ့ပြီ။", "Past Perfect", "I had eaten before she came."],
+            ["ကလေးက စာ ဖတ်နေတယ်။", "Present Continuous", "The child is reading."],
+            ["ငါ ဒီမှာ အလုပ်လုပ်လာခဲ့တာ ၃ နှစ် ရှိပြီ။", "Present Perfect Continuous", "I have been working here for three years."],
+            ["သူတို့ ရောက်လာကြပြီ။", "Present Perfect", "They have arrived."],
+            ["သူတို့ ရေချိုးနေကြတယ်။", "Present Continuous", "They are taking a shower."],
+            ["မိုးမရွာမီ ငါတို့ အိမ်သို့ ရောက်ပြီးခဲ့ပြီ။", "Past Perfect", "We had arrived home before it rained."],
+            ["ငါ အိပ်မပျော်မီ တီဗီ ကြည့်ပြီးခဲ့ပြီ။", "Past Perfect", "I had watched TV before I slept."],
+            ["မမ ရေချိုးပြီးပြီ။", "Present Perfect", "Older sister has taken a shower."],
+            ["ငါ ကော်ဖီ သောက်နေတယ်။", "Present Continuous", "I am drinking coffee."],
+            ["အဖေ အနားယူခဲ့တယ်။", "Simple Past", "Father rested."],
+            ["သူတို့ အင်္ဂလိပ်စာ လေ့လာကြတယ်။", "Simple Present", "They study English."],
+            ["သူမ ကား မောင်းတယ်။", "Simple Present", "She drives a car."],
+            ["ငါ မနေ့က ဒီအချိန်မှာ သီချင်း နားထောင်နေခဲ့တယ်။", "Past Continuous", "I was listening to music at this time yesterday."],
+            ["သူ မုန့် ဝယ်ခဲ့တယ်။", "Simple Past", "He bought snacks."],
+            ["သူမ ဈေး သွားလိမ့်မယ်။", "Simple Future", "She will go to the market."],
+            ["အမေ ပန်းစိုက်တယ်။", "Simple Present", "Mother plants flowers."],
+            ["သူ စာအုပ် ဖတ်ခဲ့တယ်။", "Simple Past", "He read a book."],
+            ["သူမ သီချင်း နားထောင်တယ်။", "Simple Present", "She listens to music."],
+            ["အမေ မလာမီ မမ ထမင်း ချက်နေခဲ့တာ ကြာပြီ။", "Past Perfect Continuous", "Older sister had been cooking before mother came."],
+            ["ငါတို့ ကော်ဖီ သောက်နေကြတယ်။", "Present Continuous", "We are drinking coffee."],
+            ["ဆရာ မဝင်မီ သူတို့ အတန်းထဲ ရောက်ပြီးခဲ့ပြီ။", "Past Perfect", "They had arrived in class before the teacher entered."],
+            ["ငါတို့ မသွားမီ သူမ ရေ သောက်ပြီးခဲ့ပြီ။", "Past Perfect", "She had drunk water before we left."],
+            ["သူ မရပ်မီ အကြာကြီး ပြေးနေခဲ့တာ။", "Past Perfect Continuous", "He had been running for a long time before he stopped."],
+            ["အဖေ ရေ သောက်ပြီးပြီ။", "Present Perfect", "Father has drunk water."],
+            ["ညီမလေး အိပ်နေလိမ့်မယ်။", "Future Continuous", "Little sister will be sleeping."],
+            ["မိုးမရွာမီ သူတို့ ကစားပြီးခဲ့ကြပြီ။", "Past Perfect", "They had played before it rained."],
+            ["အဖေ ကား မောင်းနေခဲ့တယ်။", "Past Continuous", "Father was driving a car."],
+            ["သူမ စာအုပ် ဖတ်နေတယ်။", "Present Continuous", "She is reading a book."],
+            ["ငါ သီချင်း နားထောင်နေတယ်။", "Present Continuous", "I am listening to music."],
+            ["သူမ အင်္ဂလိပ်စာ ပြောတယ်။", "Simple Present", "She speaks English."],
+            ["ငါ ရန်ကုန်မှာ နေတယ်။", "Simple Present", "I live in Yangon."],
+            ["သူ စာအုပ် ဝယ်နေခဲ့တယ်။", "Past Continuous", "He was buying a book."],
+            ["သူတို့ အလုပ် ပြီးပြီးသား ဖြစ်လိမ့်မယ်။", "Future Perfect", "They will have finished work."],
+            ["အမေ ဈေး သွားနေတယ်။", "Present Continuous", "Mother is going to the market."],
+            ["သူတို့ တီဗီ ကြည့်နေကြလိမ့်မယ်။", "Future Continuous", "They will be watching TV."],
+            ["သူတို့ စာ ရေးနေကြလိမ့်မယ်။", "Future Continuous", "They will be writing."],
+            ["အဖေ ကော်ဖီ သောက်နေတယ်။", "Present Continuous", "Father is drinking coffee."],
+            ["သူမ စာ ရေးနေခဲ့တယ်။", "Past Continuous", "She was writing."],
+            ["အဖေ အလုပ် သွားခဲ့တယ်။", "Simple Past", "Father went to work."],
+            ["သူမ မနက်ကတည်းက ထမင်း ချက်နေခဲ့တာ။", "Past Perfect Continuous", "She had been cooking since morning."],
+            ["အမေ ထမင်း ချက်ခဲ့တယ်။", "Simple Past", "Mother cooked rice."],
+            ["ငါ တံခါး ဖွင့်ပြီးပြီ။", "Present Perfect", "I have opened the door."],
+            ["ငါတို့ အလုပ်လုပ်နေကြတယ်။", "Present Continuous", "We are working."],
+            ["မနက်ဖြန် ငါ ကော်ဖီ သောက်မယ်။", "Simple Future", "I will drink coffee tomorrow."],
+            ["သူ မမေးမီ ငါ အဖြေ ပြောပြီးခဲ့ပြီ။", "Past Perfect", "I had answered before he asked."],
+            ["အမေ ဈေး ဝယ်ခဲ့တယ်။", "Simple Past", "Mother bought groceries."],
+            ["သူတို့ မသွားမီ ငါ ထမင်း စားပြီးခဲ့ပြီ။", "Past Perfect", "I had eaten before they left."],
+            ["သူမ မနက်ကတည်းက စာ လေ့လာနေခဲ့တာ။", "Past Perfect Continuous", "She had been studying since morning."],
+            ["အမေ တီဗီ ကြည့်တယ်။", "Simple Present", "Mother watches TV."],
+            ["မနက်ဖြန် ညမှာ ငါတို့ အနားယူကြမယ်။", "Simple Future", "We will rest tomorrow night."],
+            ["ကလေးက ငိုနေတယ်။", "Present Continuous", "The baby is crying."],
+            ["သူတို့ အနားယူနေကြလိမ့်မယ်။", "Future Continuous", "They will be resting."],
+            ["သူ မလာမီ ငါ စောင့်နေခဲ့တာ ၁ နာရီ ရှိပြီ။", "Past Perfect Continuous", "I had been waiting for an hour before he came."],
+            ["သူမ လမ်းလျှောက်နေခဲ့တယ်။", "Past Continuous", "She was walking."],
+            ["မမ အိမ်သန့်ရှင်းရေး လုပ်ပြီးပြီ။", "Present Perfect", "Older sister has cleaned the house."],
+            ["သူ အိမ်သို့ မပြန်မီ အလုပ် သွားခဲ့ပြီးပြီ။", "Past Perfect", "He had gone to work before returning home."],
+            ["သူတို့ စာအုပ် ဖတ်ပြီးကြပြီ။", "Present Perfect", "They have read the book."],
+            ["ငါ မနေ့က ရေကူးခဲ့တယ်။", "Simple Past", "I swam yesterday."],
+            ["မနက်ဖြန် သူ ရောက်လာလိမ့်မယ်။", "Simple Future", "He will arrive tomorrow."],
+            ["သူ တီဗီ ကြည့်ခဲ့တယ်။", "Simple Past", "He watched TV."],
+            ["ညီမလေး သီချင်း ဆိုလိမ့်မယ်။", "Simple Future", "Little sister will sing a song."],
+            ["အဖေ ဈေး သွားခဲ့တယ်။", "Simple Past", "Father went to the market."],
+            ["ညီမလေး စာရေးနေလိမ့်မယ်။", "Future Continuous", "Little sister will be writing."],
+            ["ညီမလေး ကစားနေလိမ့်မယ်။", "Future Continuous", "Little sister will be playing."],
+            ["သူ အသီး ဝယ်ခဲ့တယ်။", "Simple Past", "He bought fruit."],
+            ["သူ ပန်းသီး စားခဲ့တယ်။", "Simple Past", "He ate an apple."],
+            ["အဖေ စာ ရေးခဲ့တယ်။", "Simple Past", "Father wrote."],
+            ["သူမ အပြင် သွားတယ်။", "Simple Present", "She goes out."],
+            ["သူမ ကော်ဖီ ကြိုက်တယ်။", "Simple Present", "She likes coffee."],
+            ["အမေ ကော်ဖီ သောက်တယ်။", "Simple Present", "Mother drinks coffee."],
+            ["သူမ စာအုပ် ကြိုက်တယ်။", "Simple Present", "She likes books."],
+            ["ငါ မနေ့က ဒီအချိန်မှာ အိပ်နေခဲ့တယ်။", "Past Continuous", "I was sleeping at this time yesterday."],
+            ["ကလေးက ရေ သောက်နေတယ်။", "Present Continuous", "The child is drinking water."],
+            ["အဖေ မနက်တိုင်း လမ်းလျှောက်တယ်။", "Simple Present", "Father walks every morning."],
+            ["ငါ မင်းကို တွေ့ခဲ့တယ်။", "Simple Past", "I met you."],
+            ["ညီမလေး ရယ်နေလိမ့်မယ်။", "Future Continuous", "Little sister will be laughing."],
+            ["မနက်ဖြန် ငါ အစောကြီး ထမယ်။", "Simple Future", "I will wake up early tomorrow."],
+            ["သူမ တီဗီ ကြည့်နေခဲ့တယ်။", "Past Continuous", "She was watching TV."],
+            ["ငါ မနေ့က ဒီအချိန်မှာ ရေချိုးနေခဲ့တယ်။", "Past Continuous", "I was taking a shower at this time yesterday."],
+            ["အမေ မုန့် ချက်ခဲ့တယ်။", "Simple Past", "Mother baked a cake."],
+            ["သူမ ကော်ဖီ သောက်နေခဲ့တယ်။", "Past Continuous", "She was drinking coffee."],
+            ["ကလေးက အိပ်ပျော်သွားပြီ။", "Present Perfect", "The baby has fallen asleep."],
+            ["သူမ အလုပ် လုပ်နေခဲ့တယ်။", "Past Continuous", "She was working."],
+            ["သူ ရေ သောက်နေခဲ့တယ်။", "Past Continuous", "He was drinking water."],
+            ["သူမ အိပ်နေလိမ့်မယ်။", "Future Continuous", "She will be sleeping."],
+            ["သူ တံခါး ပိတ်လိုက်ပြီ။", "Present Perfect", "He has closed the door."],
+            ["မမ အိမ်ပြန်ရောက်ပြီးသား ဖြစ်လိမ့်မယ်။", "Future Perfect", "Older sister will have arrived home."],
+            ["သူမ ဈေး သွားနေခဲ့တယ်။", "Past Continuous", "She was going to the market."],
+            ["မမ ညစာ စားပြီးသား ဖြစ်လိမ့်မယ်။", "Future Perfect", "Older sister will have eaten dinner."],
+            ["သူမ ကလေးကို ချစ်တယ်။", "Simple Present", "She loves the child."],
+            ["သူမ မနက်ဖြန် ဟင်း ချက်လိမ့်မယ်။", "Simple Future", "She will cook curry tomorrow."],
+            ["သူ တီဗီ ကြည့်နေတယ်။", "Present Continuous", "He is watching TV."],
+            ["ငါ ရေ သောက်တယ်။", "Simple Present", "I drink water."],
+            ["ငါ မုန့် စားပြီးပြီ။", "Present Perfect", "I have eaten snacks."],
+            ["ငါ မင်းကို စောင့်နေခဲ့တာ ၁ နာရီ ရှိပြီ။", "Present Perfect Continuous", "I have been waiting for you for an hour."],
+            ["သူတို့ တီဗီ ကြည့်ပြီးပြီ။", "Present Perfect", "They have watched TV."],
+            ["အမေ စာအုပ် ဖတ်တယ်။", "Simple Present", "Mother reads a book."],
+            ["မနက်ဖြန် ငါတို့ တွေ့ကြမယ်။", "Simple Future", "We will meet tomorrow."],
+            ["မမ စာ ရေးပြီးသား ဖြစ်လိမ့်မယ်။", "Future Perfect", "Older sister will have written."],
+            ["သူ တံခါး ဖွင့်ခဲ့တယ်။", "Simple Past", "He opened the door."],
+            ["သူ မလာမီ ငါ စာအုပ် ဖတ်ပြီးခဲ့ပြီ။", "Past Perfect", "I had read the book before he came."],
+            ["သူတို့ မနက်ကတည်းက စောင့်နေခဲ့ကြတာ။", "Past Perfect Continuous", "They had been waiting since morning."],
+            ["ကလေးက စကား ပြောနေတယ်။", "Present Continuous", "The child is talking."],
+            ["ငါ ပန်းသီး စားနေတယ်။", "Present Continuous", "I am eating an apple."],
+            ["မိုးမရွာမီ အမေ ဈေး ဝယ်ပြီးခဲ့ပြီ။", "Past Perfect", "Mother had bought groceries before it rained."],
+            ["သူတို့ အင်္ဂလိပ်စာ လေ့လာနေကြလိမ့်မယ်။", "Future Continuous", "They will be studying English."],
+            ["မနက်ဖြန် ငါတို့ ဝမ်းသာကြလိမ့်မယ်။", "Simple Future", "We will be happy tomorrow."],
+            ["ငါ အလုပ် ပြီးပြီ။", "Present Perfect", "I have finished work."],
+            ["မိုးရွာလိမ့်မယ်။", "Simple Future", "It will rain."],
+            ["သူ ရေကူးခဲ့တယ်။", "Simple Past", "He swam."],
+            ["သူမ မနက်ဖြန် ကား မောင်းလိမ့်မယ်။", "Simple Future", "She will drive a car tomorrow."],
+            ["ကလေးက အိပ်နေခဲ့တယ်။", "Past Continuous", "The child was sleeping."],
+            ["သူမ စာအုပ် ဖတ်နေခဲ့တယ်။", "Past Continuous", "She was reading a book."],
+            ["သူမ အိပ်ရာထတယ်။", "Simple Present", "She wakes up."],
+            ["သူတို့ မလာမီ ငါတို့ အလုပ် ပြီးခဲ့ပြီ။", "Past Perfect", "We had finished work before they came."],
+            ["မမ ထမင်း ချက်နေလိမ့်မယ်။", "Future Continuous", "Older sister will be cooking."],
+            ["သူမ စားသောက်ဆိုင်မှာ စားတယ်။", "Simple Present", "She eats at a restaurant."],
+            ["အဖေ သတင်းစာ ဖတ်နေတယ်။", "Present Continuous", "Father is reading a newspaper."],
+            ["ငါ လမ်းလျှောက်နေတယ်။", "Present Continuous", "I am walking."],
+            ["ငါ မုန့် စားမယ်။", "Simple Future", "I will eat snacks."],
+            ["သူတို့ ဘောလုံး ကစားနေကြလိမ့်မယ်။", "Future Continuous", "They will be playing football."],
+            ["မမ စာအုပ် ဝယ်ပြီးပြီ။", "Present Perfect", "Older sister has bought a book."],
+            ["ငါ ထမင်း စားပြီးပြီ။", "Present Perfect", "I have eaten rice."],
+            ["ငါ စာအုပ် ဝယ်ပြီးပြီ။", "Present Perfect", "I have bought a book."],
+            ["မမ စာ ရေးပြီးပြီ။", "Present Perfect", "Older sister has written."],
+            ["သူမ မနက်ဖြန် လာလိမ့်မယ်။", "Simple Future", "She will come tomorrow."],
+            ["သူ အပြင် သွားခဲ့တယ်။", "Simple Past", "He went out."],
+            ["ငါ မနေ့က ဒီအချိန်မှာ လမ်းလျှောက်နေခဲ့တယ်။", "Past Continuous", "I was walking at this time yesterday."],
+            ["ညီမလေး သီချင်း ဆိုနေခဲ့တယ်။", "Past Continuous", "Little sister was singing."],
+            ["ငါ မင်းကို တွေ့ပြီးပြီ။", "Present Perfect", "I have met you."],
+            ["သူတို့ အိမ်ပြန်ရောက်ပြီးကြပြီ။", "Present Perfect", "They have arrived home."],
+            ["သူတို့ လမ်းလျှောက်လာခဲ့ကြတာ ၁ နာရီ ရှိပြီ။", "Present Perfect Continuous", "They have been walking for an hour."],
+            ["ငါတို့ အင်္ဂလိပ်စာ လေ့လာနေကြတယ်။", "Present Continuous", "We are studying English."],
+            ["ငါ အနားယူနေတယ်။", "Present Continuous", "I am resting."],
+            ["သူတို့ မနက်ဖြန် လာကြလိမ့်မယ်။", "Simple Future", "They will come tomorrow."],
+            ["သူ အလုပ် လုပ်ခဲ့တယ်။", "Simple Past", "He worked."],
+            ["သူမ မနက်ဖြန် စာအုပ် ဖတ်လိမ့်မယ်။", "Simple Future", "She will read a book tomorrow."],
+            ["လာမည့်နှစ်မှာ ငါ ဒီကုမ္ပဏီမှာ အလုပ်လုပ်လာခဲ့တာ ၅ နှစ် ရှိပြီ ဖြစ်လိမ့်မယ်။", "Future Perfect Continuous", "Next year, I will have been working at this company for five years."],
+            ["သူ စာ ရေးခဲ့တယ်။", "Simple Past", "He wrote."],
+            ["ငါ မနေ့က ကော်ဖီ သောက်ခဲ့တယ်။", "Simple Past", "I drank coffee yesterday."],
+            ["ငါ မနေ့က ဒီအချိန်မှာ ကား မောင်းနေခဲ့တယ်။", "Past Continuous", "I was driving a car at this time yesterday."],
+            ["သူတို့ စာ ဖတ်လာခဲ့တာ ၂ နာရီ ရှိပြီ။", "Present Perfect Continuous", "They have been reading for two hours."],
+            ["ကလေးက ရယ်နေတယ်။", "Present Continuous", "The child is laughing."],
+            ["သူတို့ ရေကူးနေကြလိမ့်မယ်။", "Future Continuous", "They will be swimming."],
+            ["သူမ မနက်ဖြန် ဈေး သွားလိမ့်မယ်။", "Simple Future", "She will go to the market tomorrow."],
+            ["ငါ မနေ့က ဒီအချိန်မှာ အနားယူနေခဲ့တယ်။", "Past Continuous", "I was resting at this time yesterday."],
+            ["ငါတို့ စကား ပြောနေကြတယ်။", "Present Continuous", "We are talking."],
+            ["သူတို့ ဘောလုံး ကစားခဲ့ကြတယ်။", "Simple Past", "They played football."],
+            ["ညီမလေး စာ လေ့လာနေလိမ့်မယ်။", "Future Continuous", "Little sister will be studying."],
+            ["ငါ ရုပ်ရှင် ကြည့်ပြီးပြီ။", "Present Perfect", "I have watched a movie."],
+            ["ကလေးက ဆော့နေတယ်။", "Present Continuous", "The child is playing."],
+            ["မမ စာအုပ် ဖတ်ပြီးပြီ။", "Present Perfect", "Older sister has read a book."],
+            ["မနက်ဖြန် ငါတို့ ခရီး သွားကြမယ်။", "Simple Future", "We will go on a trip tomorrow."],
+            ["အဖေ အလုပ်မှ ပြန်ရောက်ပြီးပြီ။", "Present Perfect", "Father has returned from work."],
+            ["အဖေ သတင်းစာ ဖတ်ခဲ့တယ်။", "Simple Past", "Father read a newspaper."],
+            ["သူ တံခါး ဖွင့်နေခဲ့တယ်။", "Past Continuous", "He was opening the door."],
+            ["ကလေးတွေ နို့ သောက်ကြတယ်။", "Simple Present", "Children drink milk."],
+            ["သူ စာ ရေးခဲ့တယ်။", "Simple Past", "He wrote."],
+            ["ငါ မနေ့က ဒီအချိန်မှာ စာအုပ် ဝယ်နေခဲ့တယ်။", "Past Continuous", "I was buying a book at this time yesterday."],
+            ["သူတို့ အိမ်ပြန်ရောက်ပြီးပြီ။", "Present Perfect", "They have arrived home."],
+            ["မနက်ဖြန် သူ စာအုပ် ရေးလိမ့်မယ်။", "Simple Future", "He will write a book tomorrow."],
+            ["သူမ မလာမီ ငါ စာ ရေးပြီးခဲ့ပြီ။", "Past Perfect", "I had written before she came."],
+            ["ငါ မနက်ဖြန် ၅ နာရီမှာ စာအုပ် ဖတ်ပြီးသား ဖြစ်လိမ့်မယ်။", "Future Perfect", "I will have read the book by 5 PM tomorrow."],
+            ["သူ သီချင်း ဆိုခဲ့တယ်။", "Simple Past", "He sang a song."],
+            ["သူ တံခါး ခေါက်နေခဲ့တယ်။", "Past Continuous", "He was knocking on the door."],
+            ["ငါ မင်းကို ချစ်ခဲ့တယ်။", "Simple Past", "I loved you."],
+            ["သူတို့ အလုပ် ပြီးသွားပြီ။", "Present Perfect", "They have finished work."],
+            ["သူတို့ မနက်ကတည်းက အလုပ်လုပ်နေခဲ့ကြတာ။", "Past Perfect Continuous", "They had been working since morning."],
+            ["မမ အလုပ် ပြီးသွားပြီ ဖြစ်လိမ့်မယ်။", "Future Perfect", "Older sister will have finished work."],
+            ["မနက်ဖြန် ဒီအချိန်မှာ ငါတို့ ရုပ်ရှင် ကြည့်နေကြလိမ့်မယ်။", "Future Continuous", "We will be watching a movie at this time tomorrow."],
+            ["သူတို့ ဘောလုံး ကစားနေခဲ့ကြတာ ကြာပြီ။", "Past Perfect Continuous", "They had been playing football for a long time."],
+            ["ညီမလေး ရေ သောက်နေလိမ့်မယ်။", "Future Continuous", "Little sister will be drinking water."]
+        ];
+
+        // ═══════════════════════════════════════════════════════════════
+        //  STATE
+        // ═══════════════════════════════════════════════════════════════
+
+        const PER_PAGE = 20;
+        let currentPage = 1;
+        let filteredData = [...VERBS_DATA];
+        let currentMode = 'learn';
+        let currentLetter = 'A';
+        let masteredSet = new Set();
+        let streak = 0;
+        let isLoggedIn = false;
+        let currentUser = null;
+
+        // Practice state
+        let practiceQueue = [];
+        let practiceIndex = 0;
+        let practiceCorrect = 0;
+        let practiceTotal = 0;
+        let practiceAnswered = false;
+        let practiceMode = 'practice';
+
+        // Tenses state
+        let currentTenseId = 1;
+        let currentExerciseIndex = 0;
+        let currentExercises = [];
+        let tenseScore = 0;
+        let isMixedMode = false;
+        let tensesInitialized = false;
+
+        // DOM refs
+        const tbody = document.getElementById('verbTableBody');
+        const pagination = document.getElementById('paginationControls');
+        const searchInput = document.getElementById('searchInput');
+        const filterSelect = document.getElementById('filterSelect');
+        const learnSection = document.getElementById('learnSection');
+        const practiceArea = document.getElementById('practiceArea');
+        const tensesSection = document.getElementById('tensesSection');
+        const letterChips = document.getElementById('letterChips');
+        const letterNav = document.getElementById('letterNav');
+        const questionContainer = document.getElementById('questionContainer');
+        const practiceSubmitBtn = document.getElementById('practiceSubmitBtn');
+        const practiceNextBtn = document.getElementById('practiceNextBtn');
+        const practiceResetBtn = document.getElementById('practiceResetBtn');
+        const practiceSkipBtn = document.getElementById('practiceSkipBtn');
+        const resultSummary = document.getElementById('resultSummary');
+        const totalCountSpan = document.getElementById('totalCount');
+        const masteredCountSpan = document.getElementById('masteredCount');
+        const levelBadge = document.getElementById('levelBadge');
+        const streakCountSpan = document.getElementById('streakCount');
+        const practiceTitle = document.getElementById('practiceTitle');
+        const letterBadge = document.getElementById('letterBadge');
+        const practiceProgress = document.getElementById('practiceProgress');
+        const progressFill = document.getElementById('progressFill');
+
+        const btnLearn = document.getElementById('btnLearn');
+        const btnPractice = document.getElementById('btnPractice');
+        const btnExam = document.getElementById('btnExam');
+        const btnTenses = document.getElementById('btnTenses');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginOverlay = document.getElementById('loginOverlay');
+        const mainApp = document.getElementById('mainApp');
+        const toast = document.getElementById('toast');
+        const userDisplayName = document.getElementById('userDisplayName');
+        const userAvatar = document.getElementById('userAvatar');
+
+        // Login refs
+        const loginForm = document.getElementById('loginForm');
+        const studentNameInput = document.getElementById('studentName');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginError = document.getElementById('loginError');
+        const toggleLoginPw = document.getElementById('toggleLoginPw');
+
+        // ═══════════════════════════════════════════════════════════════
+        //  TOAST
+        // ═══════════════════════════════════════════════════════════════
+
+        let toastTimer = null;
+        function showToast(msg, duration = 2200) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  SPEECH SYNTHESIS
+        // ═══════════════════════════════════════════════════════════════
+
+        function speakWord(word, callback) {
+            if (!window.speechSynthesis) {
+                showToast('⚠️ Speech synthesis not supported.', 1500);
+                if (callback) callback();
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            const voices = window.speechSynthesis.getVoices();
+            const enVoice = voices.find(v => v.lang.startsWith('en'));
+            if (enVoice) utterance.voice = enVoice;
+            utterance.onend = () => { if (callback) callback(); };
+            utterance.onerror = () => { if (callback) callback(); };
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function speakWithFeedback(word, btnElement) {
+            if (!btnElement) { speakWord(word); return; }
+            btnElement.classList.add('playing');
+            speakWord(word, () => btnElement.classList.remove('playing'));
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  HELPERS
+        // ═══════════════════════════════════════════════════════════════
+
+        function getLetterGroups() {
+            const groups = {};
+            VERBS_DATA.forEach(v => {
+                const first = v[0][0].toUpperCase();
+                if (!groups[first]) groups[first] = [];
+                groups[first].push(v);
+            });
+            return groups;
+        }
+
+        function isRegular(v1, v2) {
+            return v2 === v1 + 'ed' || v2 === v1 + 'd' || v2 === v1 + 'ied' || v2 === v1 + 'red';
+        }
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function updateStats() {
+            totalCountSpan.textContent = VERBS_DATA.length;
+            masteredCountSpan.textContent = masteredSet.size;
+            const pct = VERBS_DATA.length > 0 ? Math.round((masteredSet.size / VERBS_DATA.length) * 100) : 0;
+            let level = 'Beginner 📖';
+            if (pct >= 80) level = 'Expert 🏆';
+            else if (pct >= 50) level = 'Intermediate 📈';
+            else if (pct >= 20) level = 'Learning 📖';
+            levelBadge.textContent = level;
+            streakCountSpan.textContent = streak;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  RENDER TABLE (LEARN)
+        // ═══════════════════════════════════════════════════════════════
+
+        function renderTable() {
+            const q = searchInput.value.toLowerCase().trim();
+            const filter = filterSelect.value;
+            let data = VERBS_DATA;
+
+            if (currentLetter && currentLetter !== 'ALL') {
+                data = data.filter(v => v[0][0].toUpperCase() === currentLetter);
+            }
+            if (q) {
+                data = data.filter(v =>
+                    v[0].toLowerCase().includes(q) || v[5].toLowerCase().includes(q)
+                );
+            }
+            if (filter === 'regular') data = data.filter(v => isRegular(v[0], v[1]));
+            else if (filter === 'irregular') data = data.filter(v => !isRegular(v[0], v[1]));
+
+            filteredData = data;
+            totalCountSpan.textContent = VERBS_DATA.length;
+
+            const totalPages = Math.ceil(data.length / PER_PAGE) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * PER_PAGE;
+            const end = Math.min(start + PER_PAGE, data.length);
+            const pageData = data.slice(start, end);
+
+            let html = '';
+            if (pageData.length === 0) {
+                html = `<tr><td colspan="6" style="text-align:center; padding:40px 0; color:#6a7f9e;">No verbs found.</td></tr>`;
+            } else {
+                pageData.forEach((row, idx) => {
+                    const num = start + idx + 1;
+                    const mastered = masteredSet.has(row[0]) ? ' ⭐' : '';
+                    html += `<tr>
+                        <td class="row-num">${num}</td>
+                        <td class="v1"><span class="cell-with-audio"><span class="word">${row[0]}${mastered}</span><button class="audio-btn" data-word="${row[0]}">🔊</button></span></td>
+                        <td class="v2"><span class="cell-with-audio"><span class="word">${row[1]}</span><button class="audio-btn" data-word="${row[1]}">🔊</button></span></td>
+                        <td class="v3"><span class="cell-with-audio"><span class="word">${row[2]}</span><button class="audio-btn" data-word="${row[2]}">🔊</button></span></td>
+                        <td class="ving"><span class="cell-with-audio"><span class="word">${row[4]}</span><button class="audio-btn" data-word="${row[4]}">🔊</button></span></td>
+                        <td class="meaning">${row[5]}</td>
+                    </tr>`;
+                });
+            }
+            tbody.innerHTML = html;
+
+            tbody.querySelectorAll('.audio-btn').forEach(btn => {
+                const word = btn.dataset.word;
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    speakWithFeedback(word, btn);
+                });
+            });
+
+            let pHtml = '';
+            for (let i = 1; i <= totalPages; i++) {
+                pHtml += `<button class="${i === currentPage ? 'active-page' : ''}" data-page="${i}">${i}</button>`;
+            }
+            pagination.innerHTML = pHtml;
+            pagination.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentPage = parseInt(btn.dataset.page);
+                    renderTable();
+                });
+            });
+
+            updateStats();
+        }
+
+        function renderLetterChips() {
+            const groups = getLetterGroups();
+            const letters = Object.keys(groups).sort();
+            let html = `<button class="${currentLetter === 'ALL' ? 'active-chip' : ''}" data-letter="ALL">All <span class="count">(${VERBS_DATA.length})</span></button>`;
+            letters.forEach(l => {
+                const count = groups[l].length;
+                const active = currentLetter === l;
+                html += `<button class="${active ? 'active-chip' : ''}" data-letter="${l}">${l} <span class="count">(${count})</span></button>`;
+            });
+            letterChips.innerHTML = html;
+            letterChips.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentLetter = btn.dataset.letter;
+                    currentPage = 1;
+                    renderLetterChips();
+                    renderTable();
+                });
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  PRACTICE / EXAM
+        // ═══════════════════════════════════════════════════════════════
+
+        function buildPracticeQueue(letter, isExam = false) {
+            let pool = VERBS_DATA.filter(v => v[0][0].toUpperCase() === letter);
+            if (pool.length === 0) return [];
+            pool = shuffleArray([...pool]);
+            const limit = isExam ? Math.min(50, pool.length) : Math.min(15, pool.length);
+            const selected = pool.slice(0, limit);
+
+            const items = [];
+            selected.forEach(v => {
+                const types = ['v1', 'v2', 'v3', 'ving'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                let question, answer, hint;
+                switch (type) {
+                    case 'v1':
+                        question = `What is the base form (V1) of the verb that means "${v[5]}"?`;
+                        answer = v[0]; hint = `Meaning: ${v[5]}`; break;
+                    case 'v2':
+                        question = `What is the past tense (V2) of "${v[0]}"?`;
+                        answer = v[1]; hint = `V1: ${v[0]}`; break;
+                    case 'v3':
+                        question = `What is the past participle (V3) of "${v[0]}"?`;
+                        answer = v[2]; hint = `V1: ${v[0]}`; break;
+                    case 'ving':
+                        question = `What is the V-ing form of "${v[0]}"?`;
+                        answer = v[4]; hint = `V1: ${v[0]}`; break;
+                }
+                items.push({
+                    v1: v[0], v2: v[1], v3: v[2], ving: v[4], meaning: v[5],
+                    type, question, answer, hint,
+                });
+            });
+            return items;
+        }
+
+        function startPractice(letter, isExam = false) {
+            practiceMode = isExam ? 'exam' : 'practice';
+            practiceQueue = buildPracticeQueue(letter, isExam);
+            if (practiceQueue.length === 0) {
+                questionContainer.innerHTML = `
+                    <div class="question-card" style="text-align:center; padding:40px 20px;">
+                        <div style="font-size:40px; margin-bottom:12px;">📭</div>
+                        <h3>No verbs starting with "${letter}"</h3>
+                        <p style="color:#6a7f9e;">Try another letter.</p>
+                    </div>`;
+                practiceSubmitBtn.disabled = true;
+                practiceNextBtn.disabled = true;
+                practiceSkipBtn.disabled = true;
+                practiceProgress.textContent = `0 / 0`;
+                progressFill.style.width = '0%';
+                resultSummary.classList.remove('show');
+                return;
+            }
+
+            practiceIndex = 0;
+            practiceCorrect = 0;
+            practiceTotal = practiceQueue.length;
+            practiceAnswered = false;
+            resultSummary.classList.remove('show');
+            resultSummary.style.display = 'none';
+            practiceSubmitBtn.disabled = false;
+            practiceNextBtn.disabled = true;
+            practiceSkipBtn.disabled = false;
+
+            const title = isExam ? '📝 Exam' : '✍️ Practice';
+            practiceTitle.textContent = `${title} · Group ${letter}`;
+            letterBadge.textContent = letter;
+
+            renderLetterNav();
+            showPracticeQuestion();
+            updateStats();
+        }
+
+        function renderLetterNav() {
+            const groups = getLetterGroups();
+            const letters = Object.keys(groups).sort();
+            let html = '';
+            letters.forEach(l => {
+                const active = l === currentLetter;
+                html += `<button class="${active ? 'active-letter' : ''}" data-letter="${l}">${l}</button>`;
+            });
+            letterNav.innerHTML = html;
+            letterNav.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentLetter = btn.dataset.letter;
+                    startPractice(currentLetter, practiceMode === 'exam');
+                });
+            });
+        }
+
+        function showPracticeQuestion() {
+            if (practiceIndex >= practiceTotal) { finishPractice(); return; }
+            const item = practiceQueue[practiceIndex];
+            practiceProgress.textContent = `${practiceIndex + 1} / ${practiceTotal}`;
+            const pct = practiceTotal > 0 ? (practiceIndex / practiceTotal * 100) : 0;
+            progressFill.style.width = `${pct}%`;
+
+            let html = `
+                <div class="question-card">
+                    <div class="q-label">Question ${practiceIndex + 1}</div>
+                    <div class="q-text">${item.question}</div>
+                    <div class="q-hint">💡 ${item.hint}</div>
+                    <div class="q-input-row">
+                        <input type="text" id="answerInput" placeholder="Type your answer..." autocomplete="off" />
+                        <button id="practiceSubmitBtnInline">Check</button>
+                    </div>
+                    <div class="feedback-box" id="feedbackArea"></div>
+                    <div class="extra-info" id="extraInfo" style="display:none;"></div>
+                </div>`;
+            questionContainer.innerHTML = html;
+
+            const input = document.getElementById('answerInput');
+            const inlineBtn = document.getElementById('practiceSubmitBtnInline');
+            input.focus();
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') handlePracticeSubmit();
+            });
+            inlineBtn.addEventListener('click', handlePracticeSubmit);
+
+            practiceAnswered = false;
+            practiceSubmitBtn.disabled = false;
+            practiceNextBtn.disabled = true;
+            practiceSkipBtn.disabled = false;
+            document.getElementById('feedbackArea').textContent = '';
+            document.getElementById('feedbackArea').className = 'feedback-box';
+            document.getElementById('extraInfo').style.display = 'none';
+        }
+
+        function renderExtraInfo(item) {
+            const extraInfo = document.getElementById('extraInfo');
+            extraInfo.style.display = 'flex';
+            extraInfo.innerHTML = `
+                <span><strong>V1:</strong> ${item.v1} <button class="audio-inline" data-word="${item.v1}">🔊</button></span>
+                <span><strong>V2:</strong> ${item.v2} <button class="audio-inline" data-word="${item.v2}">🔊</button></span>
+                <span><strong>V3:</strong> ${item.v3} <button class="audio-inline" data-word="${item.v3}">🔊</button></span>
+                <span><strong>V-ing:</strong> ${item.ving} <button class="audio-inline" data-word="${item.ving}">🔊</button></span>
+                <span><strong>Meaning:</strong> ${item.meaning}</span>`;
+            extraInfo.querySelectorAll('.audio-inline').forEach(btn => {
+                const w = btn.dataset.word;
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    speakWithFeedback(w, btn);
+                });
+            });
+        }
+
+        function handlePracticeSubmit() {
+            if (practiceAnswered) return;
+            const input = document.getElementById('answerInput');
+            const feedback = document.getElementById('feedbackArea');
+            const userAnswer = input.value.trim();
+            const item = practiceQueue[practiceIndex];
+            const correct = item.answer;
+            const isCorrect = userAnswer.toLowerCase() === correct.toLowerCase();
+
+            if (isCorrect) {
+                practiceCorrect++;
+                masteredSet.add(item.v1);
+                streak++;
+            } else {
+                streak = 0;
+            }
+
+            practiceAnswered = true;
+            feedback.textContent = isCorrect ? '✅ Correct!' : `❌ Incorrect. The correct answer is: "${correct}"`;
+            feedback.className = `feedback-box ${isCorrect ? 'correct' : 'wrong'}`;
+            practiceSubmitBtn.disabled = true;
+            practiceNextBtn.disabled = false;
+            practiceSkipBtn.disabled = true;
+            input.disabled = true;
+
+            renderExtraInfo(item);
+            updateStats();
+        }
+
+        function nextPracticeQuestion() {
+            if (!practiceAnswered) return;
+            practiceIndex++;
+            if (practiceIndex >= practiceTotal) finishPractice();
+            else showPracticeQuestion();
+        }
+
+        function skipPracticeQuestion() {
+            if (practiceAnswered) return;
+            const feedback = document.getElementById('feedbackArea');
+            const item = practiceQueue[practiceIndex];
+            feedback.textContent = `⏭️ Skipped. Answer: "${item.answer}"`;
+            feedback.className = 'feedback-box wrong';
+            practiceAnswered = true;
+            practiceSubmitBtn.disabled = true;
+            practiceNextBtn.disabled = false;
+            practiceSkipBtn.disabled = true;
+            document.getElementById('answerInput').disabled = true;
+            renderExtraInfo(item);
+            streak = 0;
+            updateStats();
+        }
+
+        function finishPractice() {
+            const total = practiceTotal;
+            const correct = practiceCorrect;
+            const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+            const letter = currentLetter;
+
+            questionContainer.innerHTML = `
+                <div class="question-card" style="text-align:center; padding:40px 24px;">
+                    <div style="font-size:48px; margin-bottom:12px;">${pct >= 80 ? '🎉' : pct >= 50 ? '📈' : '📚'}</div>
+                    <h3>${practiceMode === 'exam' ? 'Exam Complete!' : 'Practice Complete!'}</h3>
+                    <p style="font-size:28px; font-weight:700; color:#1a3a6b; margin:12px 0;">${correct} / ${total}  (${pct}%)</p>
+                    <p style="color:#4a5f7e;">${pct >= 80 ? 'Excellent work! 🌟' : pct >= 50 ? 'Keep practicing! 💪' : 'Review and try again. 📖'}</p>
+                    <div style="margin-top:16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                        <button onclick="startPractice('${letter}', false)" style="padding:10px 28px; border-radius:40px; border:none; background:#1a3a6b; color:#fff; font-weight:600; cursor:pointer;">↻ Practice Again</button>
+                        <button onclick="startPractice('${letter}', true)" style="padding:10px 28px; border-radius:40px; border:none; background:#eef2f9; color:#1e2f4a; font-weight:600; cursor:pointer;">📝 Take Exam</button>
+                    </div>
+                </div>`;
+            practiceProgress.textContent = `${total} / ${total}`;
+            progressFill.style.width = '100%';
+            practiceSubmitBtn.disabled = true;
+            practiceNextBtn.disabled = true;
+            practiceSkipBtn.disabled = true;
+
+            resultSummary.style.display = 'block';
+            resultSummary.className = 'result-summary show';
+            resultSummary.innerHTML = `
+                <div class="big-score">${correct} / ${total}</div>
+                <div class="sub-text">${pct}% · ${pct >= 80 ? '🌟 Mastered!' : pct >= 50 ? '📈 Good progress!' : '📚 Keep learning!'}</div>`;
+
+            if (practiceMode === 'exam' && pct >= 80) {
+                practiceQueue.forEach(item => masteredSet.add(item.v1));
+            }
+            updateStats();
+        }
+
+        function resetPractice() {
+            startPractice(currentLetter, practiceMode === 'exam');
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  TENSES: EXERCISE GENERATOR
+        // ═══════════════════════════════════════════════════════════════
+
+        const subjects = ["I", "You", "He", "She", "They", "We", "The boy", "My sister", "The students", "John"];
+        const verbs = [
+            { v1: "write", v2: "wrote", v3: "written", ving: "writing" },
+            { v1: "eat", v2: "ate", v3: "eaten", ving: "eating" },
+            { v1: "play", v2: "played", v3: "played", ving: "playing" },
+            { v1: "read", v2: "read", v3: "read", ving: "reading" },
+            { v1: "study", v2: "studied", v3: "studied", ving: "studying" },
+            { v1: "sing", v2: "sang", v3: "sung", ving: "singing" },
+            { v1: "cook", v2: "cooked", v3: "cooked", ving: "cooking" },
+            { v1: "clean", v2: "cleaned", v3: "cleaned", ving: "cleaning" },
+            { v1: "drink", v2: "drank", v3: "drunk", ving: "drinking" },
+            { v1: "make", v2: "made", v3: "made", ving: "making" }
+        ];
+        const objects = ["a book", "an apple", "football", "a letter", "English", "a song", "dinner", "the room", "coffee", "a cake"];
+        const timeExpressions = {
+            1: ["every day", "usually", "always", "on Sundays"],
+            2: ["right now", "at the moment", "currently", "today"],
+            3: ["already", "just", "yet", "recently"],
+            4: ["for two hours", "since morning", "all day", "lately"],
+            5: ["yesterday", "last week", "in 2010", "two days ago"],
+            6: ["at 5 PM yesterday", "while I was sleeping", "when you called", "all morning"],
+            7: ["before he arrived", "by the time we got there", "already", "after she left"],
+            8: ["for three hours before she came", "since 2015", "all day yesterday"],
+            9: ["tomorrow", "next week", "soon", "later"],
+            10: ["at this time tomorrow", "at 8 PM tonight", "next year"],
+            11: ["by next Monday", "by the end of the day", "by 2030"],
+            12: ["for five hours by the time you arrive", "for two years next month"]
+        };
+
+        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+        function conjugate(tenseId, subject, verbObj) {
+            let isThirdPerson = ["He", "She", "The boy", "My sister", "John"].includes(subject);
+            switch(tenseId) {
+                case 1:
+                    let v1 = verbObj.v1;
+                    if (isThirdPerson) {
+                        if (v1.endsWith('y')) v1 = v1.slice(0, -1) + 'ies';
+                        else if (v1.endsWith('o') || v1.endsWith('s') || v1.endsWith('sh') || v1.endsWith('ch')) v1 += 'es';
+                        else v1 += 's';
+                    }
+                    return v1;
+                case 2:
+                    let be = (subject === "I") ? "am" : (isThirdPerson ? "is" : "are");
+                    return `${be} ${verbObj.ving}`;
+                case 3:
+                    let have = isThirdPerson ? "has" : "have";
+                    return `${have} ${verbObj.v3}`;
+                case 4:
+                    let haveBeen = isThirdPerson ? "has been" : "have been";
+                    return `${haveBeen} ${verbObj.ving}`;
+                case 5: return verbObj.v2;
+                case 6:
+                    let wasWere = (subject === "I" || isThirdPerson) ? "was" : "were";
+                    return `${wasWere} ${verbObj.ving}`;
+                case 7: return `had ${verbObj.v3}`;
+                case 8: return `had been ${verbObj.ving}`;
+                case 9: return `will ${verbObj.v1}`;
+                case 10: return `will be ${verbObj.ving}`;
+                case 11: return `will have ${verbObj.v3}`;
+                case 12: return `will have been ${verbObj.ving}`;
+                default: return verbObj.v1;
+            }
+        }
+
+        function generateSingleExercises(tenseId) {
+            let exercises = [];
+            let generatedSet = new Set();
+            while(exercises.length < 20) {
+                let subj = getRandom(subjects);
+                let verb = getRandom(verbs);
+                let obj = getRandom(objects);
+                let time = getRandom(timeExpressions[tenseId]);
+
+                let correctAnswer = conjugate(tenseId, subj, verb);
+                let questionText = `${subj} ___ ${obj} ${time}.`;
+
+                if(generatedSet.has(questionText)) continue;
+                generatedSet.add(questionText);
+
+                let distractors = new Set();
+                while(distractors.size < 3) {
+                    let wrongTense = Math.floor(Math.random() * 12) + 1;
+                    let wrongAns = conjugate(wrongTense, subj, verb);
+                    if(wrongAns !== correctAnswer) distractors.add(wrongAns);
+                }
+                let options = [correctAnswer, ...distractors].sort(() => Math.random() - 0.5);
+
+                exercises.push({
+                    question: questionText,
+                    answer: correctAnswer,
+                    options: options,
+                    explanationEn: `For ${tenses[tenseId-1].name}, the structure is "${tenses[tenseId-1].formula}".`,
+                    explanationMm: `${tenses[tenseId-1].name} အတွက် ပုံစံမှာ "${tenses[tenseId-1].formula}" ဖြစ်သောကြောင့် "${correctAnswer}" ကို သုံးရပါသည်။`
+                });
+            }
+            return exercises;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  TENSES: UI LOGIC
+        // ═══════════════════════════════════════════════════════════════
+
+        function renderTensesSidebar() {
+            const navList = document.getElementById('tensesNavList');
+            navList.innerHTML = '';
+            tenses.forEach(t => {
+                const div = document.createElement('div');
+                div.className = `nav-item ${t.id === currentTenseId && !isMixedMode ? 'active' : ''}`;
+                div.innerHTML = `${t.id}. ${t.name} <small>${t.mm}</small>`;
+                div.onclick = () => loadLesson(t.id, false);
+                navList.appendChild(div);
+            });
+
+            const mixedDiv = document.createElement('div');
+            mixedDiv.className = `nav-item nav-mixed ${isMixedMode ? 'active' : ''}`;
+            mixedDiv.innerHTML = `🌟 Mixed Practice (200 Qs) <small>Auto-Check System</small>`;
+            mixedDiv.onclick = () => loadLesson('mixed', true);
+            navList.appendChild(mixedDiv);
+        }
+
+        function loadLesson(id, mixed = false) {
+            currentTenseId = id;
+            isMixedMode = mixed;
+            currentExerciseIndex = 0;
+            tenseScore = 0;
+
+            renderTensesSidebar();
+
+            if(isMixedMode) {
+                currentExercises = mixedData;
+                renderMixedContent();
+            } else {
+                const tense = tenses.find(t => t.id === id);
+                currentExercises = generateSingleExercises(id);
+                renderSingleContent(tense);
+            }
+            tensesInitialized = true;
+        }
+
+        function renderSingleContent(tense) {
+            const main = document.getElementById('tensesLessonView');
+            main.innerHTML = `
+                <div class="lesson-header">
+                    <h1>${tense.id}. ${tense.name}</h1>
+                    <h3>${tense.mm}</h3>
+                </div>
+                <div class="formula">Formula: ${tense.formula}</div>
+                <div class="timeline">
+                    <span>Past</span>
+                    <span class="point">--- X ---</span>
+                    <span>Now</span>
+                    <span>Future</span>
+                </div>
+                <p><strong>အသုံးပြုပုံ (Usage):</strong> ${tense.usage}</p>
+                <div style="background: var(--silver-light); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--gold);">
+                    <strong>Example:</strong> ${tense.ex}<br>
+                    <span style="color: var(--silver-dark);">${tense.exMM}</span>
+                </div>
+                <div class="exercise-section">
+                    <h3>📝 Practice Exercises (20 Questions)</h3>
+                    <div class="progress">
+                        <span id="tensesProgressText">Question 1 of 20</span>
+                        <span id="tensesScoreText">Score: 0</span>
+                    </div>
+                    <div id="exercise-container"></div>
+                </div>
+            `;
+            renderSingleExercise();
+        }
+
+        function renderSingleExercise() {
+            const container = document.getElementById('exercise-container');
+            const ex = currentExercises[currentExerciseIndex];
+            document.getElementById('tensesProgressText').innerText = `Question ${currentExerciseIndex + 1} of 20`;
+
+            container.innerHTML = `
+                <div class="question-box">${ex.question}</div>
+                <div class="options" id="options-container">
+                    ${ex.options.map(opt => `<div class="option" onclick="checkSingleAnswer(this, '${opt}', '${ex.answer}')">${opt}</div>`).join('')}
+                </div>
+                <div id="feedback-box" class="feedback"></div>
+                <button class="btn" id="next-btn" style="display:none;" onclick="nextSingleQuestion()">Next Question ➡️</button>
+            `;
+        }
+
+        function checkSingleAnswer(element, selected, correct) {
+            const options = document.querySelectorAll('#tensesSection .option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if(opt.innerText === correct) opt.classList.add('correct');
+            });
+            const feedback = document.getElementById('feedback-box');
+            const ex = currentExercises[currentExerciseIndex];
+
+            if(selected === correct) {
+                element.classList.add('correct');
+                tenseScore++;
+                document.getElementById('tensesScoreText').innerText = `Score: ${tenseScore}`;
+                feedback.className = 'feedback correct-fb';
+                feedback.innerHTML = `<strong>✅ မှန်ကန်ပါတယ်! (Correct)</strong><br>${ex.explanationEn}<br>${ex.explanationMm}`;
+            } else {
+                element.classList.add('wrong');
+                feedback.className = 'feedback wrong-fb';
+                feedback.innerHTML = `<strong>❌ မှားယွင်းပါတယ် (Incorrect)</strong><br>The correct answer is: <strong>${correct}</strong><br>${ex.explanationEn}<br>${ex.explanationMm}`;
+            }
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextSingleQuestion() {
+            currentExerciseIndex++;
+            if(currentExerciseIndex < currentExercises.length) {
+                renderSingleExercise();
+            } else {
+                showTensesScoreScreen(20);
+            }
+        }
+
+        function renderMixedContent() {
+            const main = document.getElementById('tensesLessonView');
+            main.innerHTML = `
+                <div class="lesson-header">
+                    <h1>🌟 Mixed Practice (200 Questions)</h1>
+                    <h3>ပေးထားသော မြန်မာဝါကျကို ကြည့်ပြီး Tense ကို ရွေးချယ်ပါ။ ထို့နောက် အင်္ဂလိပ်လို ပြန်ဆိုပါ။</h3>
+                </div>
+                <div class="exercise-section" style="border-top: none; margin-top: 10px;">
+                    <div class="progress">
+                        <span id="tensesProgressText">Question 1 of 200</span>
+                        <span id="tensesScoreText">Score: 0</span>
+                    </div>
+                    <div id="exercise-container"></div>
+                </div>
+            `;
+            renderMixedExercise();
+        }
+
+        function renderMixedExercise() {
+            const container = document.getElementById('exercise-container');
+            const ex = currentExercises[currentExerciseIndex];
+            document.getElementById('tensesProgressText').innerText = `Question ${currentExerciseIndex + 1} of 200`;
+
+            let tenseOptions = tenses.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+
+            container.innerHTML = `
+                <div class="question-box">🇲🇲 ${ex[0]}</div>
+                <div class="input-group">
+                    <label>1. မည်သည့် Tense ဖြစ်သနည်း။ (Choose Tense Type)</label>
+                    <select id="tense-input" class="form-control">
+                        <option value="" disabled selected>-- ရွေးချယ်ပါ --</option>
+                        ${tenseOptions}
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>2. အင်္ဂလိပ်လို ပြန်ဆိုပါ။ (English Translation)</label>
+                    <input type="text" id="english-input" class="form-control" placeholder="Type English translation here..." autocomplete="off" onkeypress="handleTensesKeyPress(event)">
+                </div>
+                <button class="btn" id="check-btn" onclick="checkMixedAnswer()">Check Answer ✅</button>
+                <div id="feedback-box" class="feedback"></div>
+                <button class="btn" id="next-btn" style="display:none;" onclick="nextMixedQuestion()">Next Question ➡️</button>
+            `;
+            document.getElementById('tense-input').focus();
+        }
+
+        function handleTensesKeyPress(e) {
+            if(e.key === "Enter") {
+                const nextBtn = document.getElementById('next-btn');
+                if(nextBtn.style.display === 'inline-block') {
+                    nextMixedQuestion();
+                } else {
+                    checkMixedAnswer();
+                }
+            }
+        }
+
+        function normalizeText(text) {
+            return text.toLowerCase().replace(/[.,!?;:]/g, '').replace(/\s+/g, ' ').trim();
+        }
+
+        function checkMixedAnswer() {
+            const tenseInput = document.getElementById('tense-input');
+            const englishInput = document.getElementById('english-input');
+            const feedback = document.getElementById('feedback-box');
+            const checkBtn = document.getElementById('check-btn');
+            const ex = currentExercises[currentExerciseIndex];
+
+            const selectedTense = tenseInput.value;
+            const userEnglish = englishInput.value;
+            const correctTense = ex[1];
+            const correctEnglish = ex[2];
+
+            if(!selectedTense) {
+                alert("Please select a Tense first!");
+                return;
+            }
+            if(!userEnglish.trim()) {
+                alert("Please type your English translation!");
+                return;
+            }
+
+            let isTenseCorrect = (selectedTense === correctTense);
+            let isEnglishCorrect = (normalizeText(userEnglish) === normalizeText(correctEnglish));
+
+            tenseInput.disabled = true;
+            englishInput.disabled = true;
+            checkBtn.style.display = 'none';
+
+            if(isTenseCorrect && isEnglishCorrect) {
+                tenseScore++;
+                document.getElementById('tensesScoreText').innerText = `Score: ${tenseScore}`;
+                feedback.className = 'feedback correct-fb';
+                feedback.innerHTML = `<strong>✅ အားလုံး မှန်ကန်ပါတယ်! (Perfect)</strong><br><br>
+                <b>Tense:</b> ${correctTense}<br>
+                <b>English:</b> ${correctEnglish}`;
+            } else {
+                feedback.className = 'feedback wrong-fb';
+                let errorMsg = `<strong>❌ တစ်ခုခု မှားယွင်းနေပါတယ် (Incorrect)</strong><br><br>`;
+                if(!isTenseCorrect) {
+                    errorMsg += `<span style="color: var(--wrong);"><b>Tense မှားနေပါတယ်။</b></span> မှန်ကန်တာက: <b>${correctTense}</b><br>`;
+                } else {
+                    errorMsg += `<span style="color: var(--correct);"><b>Tense မှန်ပါတယ်။</b></span><br>`;
+                }
+                if(!isEnglishCorrect) {
+                    errorMsg += `<span style="color: var(--wrong);"><b>English ပြန်ဆိုချက် မှားနေပါတယ်။</b></span> မှန်ကန်တာက: <b>${correctEnglish}</b><br>`;
+                    errorMsg += `<small style="color: #666;">(သင့်အဖြေ: "${userEnglish}")</small>`;
+                } else {
+                    errorMsg += `<span style="color: var(--correct);"><b>English ပြန်ဆိုချက် မှန်ပါတယ်။</b></span><br>`;
+                }
+                feedback.innerHTML = errorMsg;
+            }
+
+            document.getElementById('next-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').focus();
+        }
+
+        function nextMixedQuestion() {
+            currentExerciseIndex++;
+            if(currentExerciseIndex < currentExercises.length) {
+                renderMixedExercise();
+            } else {
+                showTensesScoreScreen(200);
+            }
+        }
+
+        function showTensesScoreScreen(total) {
+            let finalGrade = "";
+            let percentage = (tenseScore / total) * 100;
+            let emoji = "🎉";
+
+            if(percentage >= 90) {
+                finalGrade = "အလွန်ကောင်းမွန်ပါတယ်! ထူးချွန်ပါတယ် (Excellent!)";
+                emoji = "🏆";
+            } else if(percentage >= 75) {
+                finalGrade = "ကောင်းပါတယ်! (Good Job!)";
+                emoji = "🌟";
+            } else if(percentage >= 50) {
+                finalGrade = "ထပ်ကြိုးစားပါဦး။ (Keep Trying!)";
+                emoji = "📈";
+            } else {
+                finalGrade = "သင်ခန်းစာတွေကို ပြန်လည်လေ့လာဖို့ လိုအပ်ပါတယ်။ (Needs Review)";
+                emoji = "📚";
+            }
+
+            document.getElementById('exercise-container').innerHTML = `
+                <div class="score-screen">
+                    <div class="score-emoji">${emoji}</div>
+                    <h2>ပြီးသွားပါပြီ! (Finished!)</h2>
+                    <div class="final-score">${tenseScore} / ${total}</div>
+                    <p class="final-grade">${finalGrade}</p>
+                    <button class="btn" onclick="loadLesson(${isMixedMode ? "'mixed'" : currentTenseId}, ${isMixedMode})">🔄 ပြန်လည်လေ့ကျင့်မည်</button>
+                </div>
+            `;
+            document.getElementById('tensesProgressText').innerText = `Completed`;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  NAVIGATION
+        // ═══════════════════════════════════════════════════════════════
+
+        function setMode(mode) {
+            currentMode = mode;
+            btnLearn.classList.toggle('active', mode === 'learn');
+            btnPractice.classList.toggle('active', mode === 'practice');
+            btnExam.classList.toggle('active', mode === 'exam');
+            btnTenses.classList.toggle('active', mode === 'tenses');
+
+            learnSection.style.display = 'none';
+            practiceArea.classList.remove('active');
+            tensesSection.classList.remove('active');
+
+            if (mode === 'learn') {
+                learnSection.style.display = 'block';
+                renderLetterChips();
+                renderTable();
+            } else if (mode === 'tenses') {
+                tensesSection.classList.add('active');
+                if (!tensesInitialized) {
+                    loadLesson(1, false);
+                }
+            } else {
+                practiceArea.classList.add('active');
+                startPractice(currentLetter, mode === 'exam');
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        //  LOGIN
+        // ═══════════════════════════════════════════════════════════════
+
+        function togglePasswordVisibility(inputEl, toggleBtn) {
+            if (inputEl.type === 'password') {
+                inputEl.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                inputEl.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        function performLogin(name) {
+            currentUser = { displayName: name };
+            isLoggedIn = true;
+
+            loginOverlay.classList.add('hidden');
+            mainApp.style.display = 'block';
+            document.body.classList.remove('body-locked');
+
+            userDisplayName.textContent = name;
+            userAvatar.textContent = name.charAt(0).toUpperCase();
+
+            if (window.speechSynthesis) {
+                window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => {
+                    window.speechSynthesis.getVoices();
+                };
+            }
+
+            currentLetter = VERBS_DATA[0][0][0].toUpperCase();
+            updateStats();
+            setMode('learn');
+
+            loginPassword.value = '';
+            loginError.textContent = '';
+            showToast(`🎉 Welcome, ${name}!`, 2000);
+        }
+
+        function showLoginScreen() {
+            mainApp.style.display = 'none';
+            loginOverlay.classList.remove('hidden');
+            document.body.classList.add('body-locked');
+            loginError.textContent = '';
+            loginPassword.value = '';
+            setTimeout(() => studentNameInput.focus(), 100);
+        }
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = studentNameInput.value.trim();
+            const pw = loginPassword.value;
+
+            if (!name) {
+                loginError.textContent = 'Please enter your student name.';
+                return;
+            }
+            if (pw !== LOGIN_PASSWORD) {
+                loginError.textContent = 'Incorrect password. Please try again.';
+                loginPassword.value = '';
+                loginPassword.focus();
+                return;
+            }
+
+            localStorage.setItem(SESSION_KEY, name);
+            loginError.textContent = '';
+            performLogin(name);
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem(SESSION_KEY);
+            currentUser = null;
+            isLoggedIn = false;
+            showLoginScreen();
+            showToast('👋 Signed out.', 1500);
+        });
+
+        toggleLoginPw.addEventListener('click', () => {
+            togglePasswordVisibility(loginPassword, toggleLoginPw);
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        //  EVENT BINDING (APP)
+        // ═══════════════════════════════════════════════════════════════
+
+        btnLearn.addEventListener('click', () => setMode('learn'));
+        btnPractice.addEventListener('click', () => setMode('practice'));
+        btnExam.addEventListener('click', () => setMode('exam'));
+        btnTenses.addEventListener('click', () => setMode('tenses'));
+
+        searchInput.addEventListener('input', () => { currentPage = 1; renderTable(); });
+        filterSelect.addEventListener('change', () => { currentPage = 1; renderTable(); });
+
+        practiceSubmitBtn.addEventListener('click', handlePracticeSubmit);
+        practiceNextBtn.addEventListener('click', nextPracticeQuestion);
+        practiceResetBtn.addEventListener('click', resetPractice);
+        practiceSkipBtn.addEventListener('click', skipPracticeQuestion);
+
+        // ═══════════════════════════════════════════════════════════════
+        //  INIT
+        // ═══════════════════════════════════════════════════════════════
+
+        document.body.classList.add('body-locked');
+
+        const savedName = localStorage.getItem(SESSION_KEY);
+        if (savedName) {
+            performLogin(savedName);
+        } else {
+            showLoginScreen();
+        }
+
+        console.log('✅ 1000 English Verbs + 12 English Tenses loaded.');
+        console.log('🏛️ House of J&S Computer Training Center');
+        console.log('🔓 Login: Student Name + password "HJS2026"');
+    </script>
+
+</body>
+</html>
